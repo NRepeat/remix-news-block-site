@@ -1,0 +1,37 @@
+.modalButton {
+	min-width: max-content;
+	padding-left: 2rem;
+	padding-right: 2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	border: 2px solid gainsboro;
+	background-color: white;
+	cursor: pointer;
+	border-radius: 2px;
+	font-size: 1rem;
+	transition: all 100ms;
+}
+
+.modalButton:hover {
+	background-color: rgba(42, 42, 143, 0.575);
+	border-color: gray;
+	color: white;
+}
+
+.widgetButton {
+	min-width: min-content;
+	background-color: rgb(251, 251, 251);
+	width: 300px;
+	border: 2px solid rgb(182, 182, 182);
+	padding-left: 2rem;
+	padding-right: 2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	cursor: pointer;
+	border-radius: 2px;
+}
+
+.widgetButton:hover {
+	border-color: rgb(63, 63, 63);
+
+}
