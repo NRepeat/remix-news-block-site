@@ -50,6 +50,7 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 		}
 	})
 	const widgetForms = newWidgetPosition?.map(widget => {
+		console.log("🚀 ~ widgetForms ~ widget:", widget)
 		const { type } = widget
 
 		return { Form: widgets[type].form, widget }
@@ -59,7 +60,7 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 		<>
 			{
 				widgetForms?.map(({ Form, widget }) => (
-					<DraggableWidgetWrapper key={randomNumber()} widgetData={widget.data} id={widget.id}>
+					<DraggableWidgetWrapper key={randomNumber()} widgetData={widget.additionalData} id={widget.id}>
 						<Form key={widget.id} widget={widget} posts={posts} />
 					</DraggableWidgetWrapper>
 				))

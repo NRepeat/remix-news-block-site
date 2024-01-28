@@ -11,8 +11,7 @@ export type WidgetDataType = {
 export type WidgetInstance = {
 	id: string | UniqueIdentifier
 	type: WidgetType
-	containerId: string | UniqueIdentifier
-	data?: WidgetDataType
+	additionalData?: Record<string, string | number | boolean | string[]>
 }
 export type WidgetButton = {
 	id: string | UniqueIdentifier

@@ -17,6 +17,8 @@ model Page {
   posts           Post[]
   baners          Baner[]
   texts           Text[]
+  content         String          @default("[]")
+  type            String          @default("page")
   postsCarousels  PostCarousel[]
   imagesCarousels ImageCarousel[]
   createdAt       DateTime        @default(now())
@@ -26,6 +28,7 @@ model Page {
 model Post {
   id                Int                @id @default(autoincrement())
   title             String
+  type              String             @default("post")
   slug              String             @unique
   thumbnail         String?
   description       String
@@ -64,17 +67,22 @@ model Tag {
 model Text {
   id        Int      @id @default(autoincrement())
   title     String
+  article   String   @default("")
   order     Int?
+  pageId    Int?
+  type      String   @default("TextWidget")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Page      Page?    @relation(fields: [pageId], references: [id])
-  pageId    Int?
+
+  @@unique([order, pageId])
 }
 
 model Baner {
   id        Int      @id @default(autoincrement())
   link      String?
   order     Int?
+  type      String   @default("baner")
   image     Image    @relation(fields: [imageId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -88,6 +96,7 @@ model ImageCarousel {
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   ImageCarouselImage ImageCarouselImage[]
+  type               String               @default("imageCarousel")
   order              Int?
   Page               Page?                @relation(fields: [pageId], references: [id])
   pageId             Int?
@@ -97,6 +106,7 @@ model PostCarousel {
   id        Int                @id @default(autoincrement())
   posts     PostCarouselPost[]
   order     Int?
+  type      String             @default("postCarousel")
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
   Page      Page?              @relation(fields: [pageId], references: [id])
@@ -118,6 +128,7 @@ model Image {
   id                 Int                  @id @default(autoincrement())
   path               String
   order              Int?
+  type               String               @default("image")
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   ImageCarouselImage ImageCarouselImage[]

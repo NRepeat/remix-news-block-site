@@ -19,7 +19,9 @@ type TextFormType = {
 };
 
 const Form: FC<TextFormType> = ({ widget, }) => {
+	console.log("🚀 ~ widget:", widget)
 	const [value, setValue] = useState<WidgetDataType | null>(null);
+	console.log("🚀 ~ value:", value)
 
 	const sub = useSubmit();
 
@@ -32,14 +34,14 @@ const Form: FC<TextFormType> = ({ widget, }) => {
 	})
 
 	useEffect(() => {
-		if (widget.data) {
-			setValue(widget.data);
+		if (widget.additionalData) {
+			setValue(widget.additionalData);
 		}
 	}, [widget]);
 
 	const defaultValues = {
-		title: widget.data?.title || "",
-		text: widget.data?.text || "",
+		title: value?.title || "",
+		text: value?.text || "",
 	};
 
 	const textValidator = withZod(
