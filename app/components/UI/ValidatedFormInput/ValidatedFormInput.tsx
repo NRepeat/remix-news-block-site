@@ -23,7 +23,7 @@ const FormInput = ({
 		<div className={styles.input}>
 			<div className={styles.container}>
 				<label className={styles.label} htmlFor={name}>
-					{label}:
+					{label}
 				</label>
 				<input
 					onChange={onChange}

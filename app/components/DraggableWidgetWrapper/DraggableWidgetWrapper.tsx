@@ -7,7 +7,7 @@ import styles from "./styles.module.css";
 type DraggableWidgetWrapperType = {
 	id: UniqueIdentifier,
 	widgetData: WidgetDataType | undefined,
-	children: React.ReactNode
+	children: React.ReactNode,
 }
 
 const DraggableWidgetWrapper: FC<DraggableWidgetWrapperType> = ({ id, children, widgetData }) => {
@@ -27,7 +27,7 @@ const DraggableWidgetWrapper: FC<DraggableWidgetWrapperType> = ({ id, children, 
 	});
 	const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
 		id,
-		data: { id, widgetData }
+		data: { id, widgetData },
 	})
 	if (isDragging) return null;
 

@@ -5,8 +5,10 @@ import {
 	useDroppable, useSensor,
 	useSensors,
 } from '@dnd-kit/core'
+import { SerializeFrom } from '@remix-run/node'
 import { FC, useEffect, useState } from 'react'
 import { MdArrowDropDown } from 'react-icons/md'
+import { GetAllPostsType } from '~/service/post.server'
 import { DropInstance, WidgetInstance } from '~/types/types'
 import WidgetWrapper from '../WidgetWrapper/WidgetWrapper'
 
@@ -15,9 +17,10 @@ import WidgetWrapper from '../WidgetWrapper/WidgetWrapper'
 type DropZoneWrapperType = {
 	dropZone: DropInstance
 	widgetsData?: WidgetInstance[]
+	posts: SerializeFrom<GetAllPostsType>
 }
 
-const DropZoneWrapper: FC<DropZoneWrapperType> = ({ dropZone, widgetsData }) => {
+const DropZoneWrapper: FC<DropZoneWrapperType> = ({ dropZone, widgetsData, posts }) => {
 	const [open, setOpen] = useState<boolean>(true)
 	useEffect(() => {
 		if (widgetsData?.length !== 0) {
@@ -53,7 +56,7 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ dropZone, widgetsData }) => 
 			{open &&
 				<DndContext sensors={sensors}>
 					<div ref={setNodeRef}>
-						{widgetsData && <WidgetWrapper widgetsData={widgetsData} />}
+						{widgetsData && <WidgetWrapper posts={posts} widgetsData={widgetsData} />}
 						{widgetsData?.length === 0 && <div className='w-full min-h-12 bg-gray-200 flex items-center pl-4 '>No widgets added eat </div>}
 
 					</div>

@@ -1,0 +1,42 @@
+.wrapper {
+	transition: all 0.1s;
+	position: relative;
+}
+
+
+
+.topArea {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	height: calc(100% / 2);
+	border-radius: 5px;
+	z-index: 12;
+}
+
+
+
+.bottomArea {
+	z-index: 11;
+	position: absolute;
+	width: 100%;
+	height: calc(100% / 2);
+	border-radius: 5px;
+	bottom: 0;
+}
+
+.topBar {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 5px;
+	background-color: cadetblue;
+}
+
+.bottomBar {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 5px;
+	background-color: cadetblue;
+}

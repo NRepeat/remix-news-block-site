@@ -1,14 +1,18 @@
 import { useDndMonitor } from "@dnd-kit/core"
+import { SerializeFrom } from "@remix-run/node"
 import { FC, useEffect, useState } from "react"
+import { randomNumber } from "~/routes/_index/_index"
+import { GetAllPostsType } from "~/service/post.server"
 import { WidgetInstance } from "~/types/types"
 import DraggableWidgetWrapper from "../DraggableWidgetWrapper/DraggableWidgetWrapper"
 import widgets from "../Widgets/Widgets"
 type WidgetWrapperType = {
 	widgetsData: WidgetInstance[]
+	posts: SerializeFrom<GetAllPostsType>
 }
 
 
-const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData }) => {
+const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 	const [newWidgetPosition, setNewWidgetPosition] = useState<WidgetInstance[] | null>()
 	useEffect(() => {
 		if (widgetsData.length !== 0) {
@@ -55,8 +59,8 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData }) => {
 		<>
 			{
 				widgetForms?.map(({ Form, widget }) => (
-					<DraggableWidgetWrapper key={widget.containerId} widgetData={widget.data} id={widget.id}>
-						<Form key={widget.id} widget={widget} />
+					<DraggableWidgetWrapper key={randomNumber()} widgetData={widget.data} id={widget.id}>
+						<Form key={widget.id} widget={widget} posts={posts} />
 					</DraggableWidgetWrapper>
 				))
 			}

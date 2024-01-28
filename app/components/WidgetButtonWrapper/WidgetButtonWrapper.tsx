@@ -12,6 +12,7 @@ type WidgetButtonWrapper = {
 }
 
 const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones }) => {
+
 	const [open, setIsOpen] = useState<boolean>(false)
 	const { id, type } = button
 
@@ -27,7 +28,6 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones }) => 
 
 		sub(newFormData, { method: "post", action: "/?index" })
 	}
-
 	return (
 		<div>
 			<button onClick={() => setIsOpen(true)} onKeyDown={() => setIsOpen(true)} className={styles.widgetButton} >

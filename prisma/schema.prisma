@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Page {
+  id              Int             @id @default(autoincrement())
+  name            String
+  slug            String          @unique
+  posts           Post[]
+  baners          Baner[]
+  texts           Text[]
+  postsCarousels  PostCarousel[]
+  imagesCarousels ImageCarousel[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Post {
+  id                Int                @id @default(autoincrement())
+  title             String
+  slug              String             @unique
+  thumbnail         String?
+  description       String
+  article           String
+  rating            Int
+  order             Int?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  page              Page?              @relation(fields: [pageId], references: [id])
+  pageId            Int?
+  postCarouselPosts PostCarouselPost[]
+  image             Image?             @relation(fields: [imageId], references: [id])
+  imageId           Int?
+  TagPost           TagPost[]
+}
+
+model TagPost {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  tagId     Int
+  post      Post     @relation(fields: [postId], references: [id])
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  TagPost   TagPost[]
+}
+
+model Text {
+  id        Int      @id @default(autoincrement())
+  title     String
+  order     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Page      Page?    @relation(fields: [pageId], references: [id])
+  pageId    Int?
+}
+
+model Baner {
+  id        Int      @id @default(autoincrement())
+  link      String?
+  order     Int?
+  image     Image    @relation(fields: [imageId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imageId   Int
+  Page      Page?    @relation(fields: [pageId], references: [id])
+  pageId    Int?
+}
+
+model ImageCarousel {
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  ImageCarouselImage ImageCarouselImage[]
+  order              Int?
+  Page               Page?                @relation(fields: [pageId], references: [id])
+  pageId             Int?
+}
+
+model PostCarousel {
+  id        Int                @id @default(autoincrement())
+  posts     PostCarouselPost[]
+  order     Int?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  Page      Page?              @relation(fields: [pageId], references: [id])
+  pageId    Int?
+}
+
+model PostCarouselPost {
+  id             Int          @id @default(autoincrement())
+  post           Post         @relation(fields: [postId], references: [id])
+  postId         Int
+  order          Int?
+  postCarousel   PostCarousel @relation(fields: [postCarouselId], references: [id])
+  postCarouselId Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Image {
+  id                 Int                  @id @default(autoincrement())
+  path               String
+  order              Int?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  ImageCarouselImage ImageCarouselImage[]
+  Post               Post[]
+  Baner              Baner[]
+}
+
+model ImageCarouselImage {
+  id              Int           @id @default(autoincrement())
+  image           Image         @relation(fields: [imageId], references: [id])
+  imageId         Int
+  order           Int?
+  imageCarousel   ImageCarousel @relation(fields: [imageCarouselId], references: [id])
+  imageCarouselId Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
