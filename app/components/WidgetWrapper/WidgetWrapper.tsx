@@ -1,6 +1,7 @@
 import { useDndMonitor } from "@dnd-kit/core"
 import { SerializeFrom } from "@remix-run/node"
-import { FC, useEffect, useState } from "react"
+import { useSubmit } from "@remix-run/react"
+import { FC } from "react"
 import { randomNumber } from "~/routes/_index/_index"
 import { GetAllPostsType } from "~/service/post.server"
 import { WidgetInstance } from "~/types/types"
@@ -13,12 +14,9 @@ type WidgetWrapperType = {
 
 
 const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
-	const [newWidgetPosition, setNewWidgetPosition] = useState<WidgetInstance[] | null>()
-	useEffect(() => {
-		if (widgetsData.length !== 0) {
-			setNewWidgetPosition([...widgetsData])
-		}
-	}, [widgetsData])
+	const submit = useSubmit()
+	const newWidgetPosition = widgetsData
+
 	useDndMonitor({
 		onDragEnd(e) {
 
@@ -33,33 +31,36 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 				if (draggedWidgetIndex !== -1 && overIndex !== -1) {
 					const [draggedWidget] = newWidgetPosition.splice(draggedWidgetIndex, 1);
 					newWidgetPosition.splice(overIndex, 0, draggedWidget);
-					setNewWidgetPosition(prev => Array.isArray(prev) ? [...newWidgetPosition] : prev)
+					submit({ type: "drop", widgets: JSON.stringify(newWidgetPosition) }, { method: "post", navigate: false, })
 				}
+
 			}
 			if (over?.data?.current?.isBottomHalfDroppable) {
 
 
 				if (draggedWidgetIndex !== -1 && overIndex !== -1) {
 					const [draggedWidget] = newWidgetPosition.splice(draggedWidgetIndex, 1);
-					newWidgetPosition.splice(overIndex + 1, 0, draggedWidget);
+					console.log("🚀 ~ onDragEnd ~ draggedWidget:", draggedWidget)
+					newWidgetPosition.splice(overIndex, 0, draggedWidget);
+					console.log("🚀 ~ onDragEnd ~ newWidgetPosition:", newWidgetPosition)
 
-					setNewWidgetPosition(prev => Array.isArray(prev) ? [...newWidgetPosition] : prev)
+					submit({ type: "drop", widgets: JSON.stringify(newWidgetPosition) }, { method: "post", navigate: false, })
+
 				}
 			}
 			return null;
 		}
 	})
 	const widgetForms = newWidgetPosition?.map(widget => {
-		console.log("🚀 ~ widgetForms ~ widget:", widget)
 		const { type } = widget
 
-		return { Form: widgets[type].form, widget }
+		return { Form: widgets[type].widget, widget }
 
 	})
 	return (
 		<>
 			{
-				widgetForms?.map(({ Form, widget }) => (
+				widgetForms.map(({ Form, widget }) => (
 					<DraggableWidgetWrapper key={randomNumber()} widgetData={widget.additionalData} id={widget.id}>
 						<Form key={widget.id} widget={widget} posts={posts} />
 					</DraggableWidgetWrapper>

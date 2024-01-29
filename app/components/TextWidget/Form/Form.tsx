@@ -1,4 +1,3 @@
-import { useDndMonitor } from "@dnd-kit/core"
 import { useSubmit } from "@remix-run/react"
 import { withZod } from "@remix-validated-form/with-zod"
 import { FC, useEffect, useState } from "react"
@@ -14,28 +13,34 @@ import styles from "./styles.module.css"
 
 type TextFormType = {
 	widget: WidgetInstance;
-	open: boolean
-	setOpen: React.Dispatch<React.SetStateAction<boolean>>
-};
 
-const Form: FC<TextFormType> = ({ widget, }) => {
-	console.log("🚀 ~ widget:", widget)
-	const [value, setValue] = useState<WidgetDataType | null>(null);
-	console.log("🚀 ~ value:", value)
+};
+export const textValidator = withZod(
+	z.object({
+		title: zfd.text(z.string().min(5).max(15)),
+		text: zfd.text(z.string().min(10).max(500)),
+		id: z.string(),
+		type: z.string()
+	})
+);
+const Form: FC<TextFormType> = ({ widget }) => {
+	const [value, setValue] = useState<WidgetDataType>({
+		title: "",
+		text: "",
+	});
 
 	const sub = useSubmit();
 
-	useDndMonitor({
-		onDragStart() {
-			const stringifyWidgetData = JSON.stringify(value)
-			sub({ widgetData: stringifyWidgetData }, { method: "post", navigate: false })
-		},
 
-	})
 
 	useEffect(() => {
 		if (widget.additionalData) {
-			setValue(widget.additionalData);
+			const content = widget.additionalData?.content as string
+			if (content !== '') {
+				const value = JSON.parse(content)
+				setValue(value);
+			}
+
 		}
 	}, [widget]);
 
@@ -44,16 +49,12 @@ const Form: FC<TextFormType> = ({ widget, }) => {
 		text: value?.text || "",
 	};
 
-	const textValidator = withZod(
-		z.object({
-			title: zfd.text(z.string().min(5).max(15)),
-			text: zfd.text(z.string().min(10).max(500)),
-		})
-	);
 
 
-	const deleteWidget = () => {
-		sub({ containerId: widget.containerId, widgetId: widget.id }, { action: "?index", method: "delete", navigate: false });
+
+	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault()
+		sub({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { action: "?index", method: "delete", navigate: false });
 	};
 
 	const handleTitleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,12 +69,14 @@ const Form: FC<TextFormType> = ({ widget, }) => {
 
 	return (
 		<WidgetFormWrapper widget={widget}>
-			<ValidatedForm className={styles.form} defaultValues={defaultValues} validator={textValidator} method="post">
+			<ValidatedForm className={styles.form} navigate={false} defaultValues={defaultValues} validator={textValidator} method="post">
+				<FormInput type="hidden" name='type' value={'textWidget'} />
+				<FormInput type="hidden" name="id" value={widget.id} />
 				<FormInput name="title" value={value?.title} placeholder="Title" onChange={handleTitleValueChange} label="Title" type="text" />
 				<FormTextArea name="text" value={value?.text} placeholder="text" onChange={handleTextValueChange} type="text" />
 				<div className="flex justify-between">
 					<SubmitButton classNames={styles.saveButton}>Save</SubmitButton>
-					<button className={styles.deleteButton} onClick={deleteWidget}>
+					<button className={styles.deleteButton} onClick={(e) => deleteWidget(e)}>
 						Delete
 					</button>
 				</div>

@@ -34,6 +34,7 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts }) => {
 
 
 	const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		event.preventDefault()
 		setOption(event.target.value);
 		// if (event.target.value === 'manual') {
 		// 	setIsOpen(true);
@@ -55,7 +56,7 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts }) => {
 			{option === 'manual' && (
 				<div >
 
-					<button onClick={() => setModalOpen(true)} onKeyDown={() => setModalOpen(true)}>
+					<button onClick={(e) => { e.preventDefault(), setModalOpen(true) }} onKeyDown={() => setModalOpen(true)}>
 						<p>Add post</p>
 					</button>
 					{modalOpen && (

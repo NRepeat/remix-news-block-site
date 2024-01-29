@@ -30,7 +30,7 @@ const DraggableWidgetWrapper: FC<DraggableWidgetWrapperType> = ({ id, children, 
 		data: { id, widgetData },
 	})
 	if (isDragging) return null;
-
+	attributes['aria-describedby'] = id as string;
 	return <div className={styles.wrapper} ref={setNodeRef} {...attributes} {...listeners} >
 		{children}
 		<div ref={droppableTop.setNodeRef} className={styles.topArea} />

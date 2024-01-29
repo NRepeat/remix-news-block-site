@@ -6,10 +6,11 @@ import {
 	useSensors,
 } from '@dnd-kit/core'
 import { SerializeFrom } from '@remix-run/node'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { MdArrowDropDown } from 'react-icons/md'
 import { GetAllPostsType } from '~/service/post.server'
 import { DropInstance, WidgetInstance } from '~/types/types'
+import DragOverlayWrapper from '../DragOverlayWrapper/DragOverlayWrapper'
 import WidgetWrapper from '../WidgetWrapper/WidgetWrapper'
 
 
@@ -22,11 +23,7 @@ type DropZoneWrapperType = {
 
 const DropZoneWrapper: FC<DropZoneWrapperType> = ({ dropZone, widgetsData, posts }) => {
 	const [open, setOpen] = useState<boolean>(true)
-	useEffect(() => {
-		if (widgetsData?.length !== 0) {
-			setOpen(true)
-		}
-	}, [widgetsData])
+
 	const mouseSensor = useSensor(MouseSensor, {
 		activationConstraint: {
 			distance: 10,
@@ -60,6 +57,7 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ dropZone, widgetsData, posts
 						{widgetsData?.length === 0 && <div className='w-full min-h-12 bg-gray-200 flex items-center pl-4 '>No widgets added eat </div>}
 
 					</div>
+					< DragOverlayWrapper widgetsData={widgetsData} />
 				</DndContext >
 			}
 		</div>

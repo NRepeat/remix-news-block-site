@@ -1,46 +1,44 @@
-import { useEffect, useState } from "react";
-import Dropzone, { FileWithPath } from "react-dropzone";
-
-const DropzoneImage = () => {
-	const [files, setFiles] = useState<FileWithPath[]>([]);
-
-	const [filePreviews, setFilePreviews] = useState<string[]>([]);
-
+import { withZod } from "@remix-validated-form/with-zod";
+import { ValidatedForm } from 'remix-validated-form';
+import { z } from "zod";
+import { zfd } from "zod-form-data";
+import { SubmitButton } from "../UI/SubmitButton/SubmitButton";
+import FormInput from "../UI/ValidatedFormInput/ValidatedFormInput";
 
 
-	useEffect(() => {
-		const loadFile = (file: FileWithPath) => {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setFilePreviews((prevPreviews) => [...prevPreviews, reader.result as string]);
-			};
-			reader.readAsDataURL(file);
-		};
+export type MediaType = "postThumbnail" | "postImage"
+type MediaFormType = {
+	action: string,
+	type: MediaType
+	label: string
+}
 
-		files.forEach((file) => {
-			loadFile(file);
-		});
-	}, [files]);
 
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+
+export const mediaValidator = withZod(
+	z.object({
+		file: zfd.file().refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`).refine(
+			(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+			"Only .jpg, .jpeg, .png and .webp formats are supported."
+		),
+		type: zfd.text()
+	})
+);
+
+const MediaForm = ({ action, type, label }: MediaFormType) => {
 	return (
-		<>
-			<Dropzone onDrop={(acceptedFiles) => setFiles((prevFiles) => [...prevFiles, ...acceptedFiles])}>
-				{({ getRootProps, getInputProps }) => (
-					<section>
-						<div {...getRootProps()}>
-							<input {...getInputProps()} />
-							<p>Drag drop some files here, or click to select files</p>
-						</div>
-					</section>
-				)}
-			</Dropzone>
-			<div>
-				{filePreviews.map((preview, index) => (
-					<img key={index} src={preview} alt={`Preview ${index}`} style={{ width: "100px", height: "100px", marginRight: "10px" }} />
-				))}
-			</div>
-		</>
-	);
-};
+		<ValidatedForm validator={mediaValidator} encType="multipart/form-data" action={action} method="post" navigate={false}>
+			<label htmlFor="file">{label}</label>
+			<FormInput name='file' type='file' />
+			<FormInput name="type" type="hidden" value={type} />
+			<SubmitButton >
+				Save
+			</SubmitButton>
+		</ValidatedForm>
+	)
+}
 
-export default DropzoneImage;
+export default MediaForm

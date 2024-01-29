@@ -27,13 +27,13 @@ model Page {
 
 model Post {
   id                Int                @id @default(autoincrement())
-  title             String
-  type              String             @default("post")
-  slug              String             @unique
+  title             String?            @default("")
+  type              String?            @default("post")
+  slug              String?            @unique
   thumbnail         String?
-  description       String
-  article           String
-  rating            Int
+  description       String?
+  article           String?
+  rating            Int?               @default(0)
   order             Int?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
@@ -70,6 +70,7 @@ model Text {
   article   String   @default("")
   order     Int?
   pageId    Int?
+  content   String   @default("[]")
   type      String   @default("TextWidget")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

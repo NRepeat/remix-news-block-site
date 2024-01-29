@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { useSubmit } from '@remix-run/react'
 import { FC, useState } from 'react'
-import { DropInstance, WidgetButton } from '~/types/types'
+import { DropInstance, WidgetButton, WidgetInstance } from '~/types/types'
 import Modal from '../Modal/Modal'
 import widgets from '../Widgets/Widgets'
 import styles from "./styles.module.css"
@@ -9,9 +9,10 @@ import styles from "./styles.module.css"
 type WidgetButtonWrapper = {
 	button: WidgetButton,
 	dropZones: DropInstance[]
+	widgetsArr: WidgetInstance[] | undefined
 }
 
-const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones }) => {
+const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones, widgetsArr }) => {
 
 	const [open, setIsOpen] = useState<boolean>(false)
 	const { id, type } = button
@@ -20,13 +21,12 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones }) => 
 	const sub = useSubmit()
 	const addWidgetToContainer = (containerId: string | UniqueIdentifier) => {
 		const newFormData = new FormData()
-
-
-		newFormData.set('id', `widget-button-${id}`)
-		newFormData.set('type', type)
-		newFormData.set('containerId', `${containerId}`)
-
-		sub(newFormData, { method: "post", action: "/?index" })
+		const newElement = widgets[type].construct({ id: `widget-button-${id}`, containerId });
+		const stringifiedNewElement = JSON.stringify(newElement)
+		newFormData.set("page", "main")
+		newFormData.set("newElement ", stringifiedNewElement)
+		newFormData.set("index", `${widgetsArr?.length}`)
+		sub({ newElement: stringifiedNewElement, page: "main", index: widgetsArr?.length ? widgetsArr.length : 0 }, { method: "post", action: "/?index" })
 	}
 	return (
 		<div>

@@ -1,11 +1,24 @@
-import { Widget } from "~/types/types"
-import Form from "./Form/Form"
+import { Widget, WidgetType } from "~/types/types";
+import Form from "./Form/Form";
 
+const additionalData = {
+	label: 'Text Block',
+	required: false,
+	placeHolder: 'Text',
+	content: '',
+};
+const type: WidgetType = "TextWidget"
 const textWidget: Widget = {
-	type: "TextWidget",
 	name: "Text widget",
+	type,
+	construct: ({ id, containerId }) => ({
+		id,
+		containerId,
+		type,
+		additionalData
+	}),
 	button: { name: "Text" },
-	form: Form,
+	widget: Form,
 }
 
 export default textWidget

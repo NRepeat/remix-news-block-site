@@ -52,21 +52,21 @@ export const getPostBySlug = async (postSlug: string) => {
 	}
 }
 
-// export const updatePost = async (
-// 	postId: number,
-// 	updatedData: updatePostType
-// ) => {
-// 	try {
-// 		const updatedPost = await prisma.post.update({
-// 			where: { id: postId },
-// 			data: updatedData,
-// 		})
-// 		return updatedPost
-// 	} catch (error) {
-// 		console.log('🚀 ~ error:', error)
-// 		throw new Error('Update post error')
-// 	}
-// }
+export const updatePost = async (
+	postId: number,
+	updatedData: updatePostType
+) => {
+	try {
+		const updatedPost = await prisma.post.update({
+			where: { id: postId },
+			data: updatedData,
+		})
+		return updatedPost
+	} catch (error) {
+		console.log('🚀 ~ error:', error)
+		throw new Error('Update post error')
+	}
+}
 
 export const deletePost = async (postId: number) => {
 	try {
@@ -79,20 +79,29 @@ export const deletePost = async (postId: number) => {
 	}
 }
 
-// export const createPost = async ({ data }: createPostType) => {
-// 	try {
-// 		const post = await prisma.post.create({
-// 			data: {
-// 				title: data.title,
-// 				slug: data.slug,
-// 				article: data.content,
-// 				page: { connect: { slug: 'main' } },
-// 			},
-// 		})
+export const createPost = async () => {
+	try {
+		const post = await prisma.post.create({
+			data: {},
+		})
 
-// 		return post
-// 	} catch (error) {
-// 		console.log('🚀 ~ createPost ~ error:', error)
-// 		throw new Error('Create post error')
-// 	}
-// }
+		return post
+	} catch (error) {
+		console.log('🚀 ~ createPost ~ error:', error)
+		throw new Error('Create post error')
+	}
+}
+
+export const connectImageToPost = async (id: number, imageId: number) => {
+	try {
+		const post = await prisma.post.update({
+			where: { id },
+			data: {
+				image: { connect: { id: imageId } },
+			},
+		})
+		return post
+	} catch (error) {
+		throw new Error('Create post error')
+	}
+}

@@ -11,6 +11,7 @@ export type WidgetDataType = {
 export type WidgetInstance = {
 	id: string | UniqueIdentifier
 	type: WidgetType
+	containerId: UniqueIdentifier
 	additionalData?: Record<string, string | number | boolean | string[]>
 }
 export type WidgetButton = {
@@ -24,11 +25,18 @@ export type DropInstance = {
 }
 export type Widget = {
 	name: string
-	type: WidgetType
+	type: string
+	construct: ({
+		id,
+		containerId,
+	}: {
+		id: string
+		containerId: string | UniqueIdentifier
+	}) => WidgetInstance
 	button: {
 		name: string
 	}
-	form: FC<{
+	widget: FC<{
 		widget: WidgetInstance
 		posts?: SerializeFrom<PostWithTags[]>
 	}>
