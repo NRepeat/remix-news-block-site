@@ -14,7 +14,6 @@ type updatePostType = {
 	title?: string
 	article?: string
 	description?: string
-	image?: string
 	thumbnail?: string
 }
 export const getAllPosts = async (): Promise<GetAllPostsType> => {
@@ -84,6 +83,7 @@ export const createPost = async () => {
 		const post = await prisma.post.create({
 			data: {},
 		})
+		console.log('🚀 ~ createPost ~ post:', post)
 
 		return post
 	} catch (error) {

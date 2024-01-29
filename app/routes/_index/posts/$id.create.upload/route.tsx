@@ -1,13 +1,12 @@
-import { ActionFunctionArgs, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { ActionFunctionArgs, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
 import { createImage } from "~/service/image.server";
 import { connectImageToPost } from "~/service/post.server";
 
-export type MediaType = "postThumbnail" | "postImage"
+export type MediaType = "postThumbnail" | "postImage" | "url"
 
 
 
 export async function action({ params, request }: ActionFunctionArgs) {
-	console.log("🚀 ~ action ~  request:", request)
 	if (!params.id) throw new Error("Not found")
 	const uploadHandler = unstable_composeUploadHandlers(
 		unstable_createFileUploadHandler({
@@ -22,22 +21,33 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		uploadHandler
 	);
 	console.log(formData)
-	const { name } = formData.get("file") as File
 
 	const formDataType = formData.get("type") as MediaType
 	const id = (params.id)
+	const headers = new Headers()
+	headers.append('postId', id)
+	if (formDataType === 'url') {
+		const url = formData.get("url") as string
 
+		const image = await createImage(url)
+		await connectImageToPost(parseInt(id), image.id)
+	}
 	if (formDataType === "postThumbnail") {
+		const { name } = formData.get("file") as File
+
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return redirect(`/posts/create`)
+		return {};
 	}
 	if (formDataType === "postImage") {
+		const { name } = formData.get("file") as File
+
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return redirect(`/posts/create`)
+		return {};
 	}
-	return redirect(`/posts/create`)
+
+	return {};
 }
 
 

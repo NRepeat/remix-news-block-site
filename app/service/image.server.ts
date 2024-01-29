@@ -10,3 +10,14 @@ export const createImage = async (path: string) => {
 		throw new Error('Error create image')
 	}
 }
+
+export const getImage = async (id: number) => {
+	try {
+		const image = await prisma.image.findFirst({
+			where: { id },
+		})
+		return image
+	} catch (error) {
+		throw new Error('Error get image')
+	}
+}

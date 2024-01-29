@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom"
-
+import { useSubmit } from '@remix-run/react'
 const CreateButton = () => {
-
+	const submit = useSubmit()
+	const handleSubmit = () => {
+		submit({ asd: "asd" }, { action: "/posts/post/create/", method: "post" })
+	}
 	return (
-		<Link to={"/posts/create/"} className='inline-flex pr-4 pl-4 pt-1 pb-1 bg-green-200 hover:bg-green-400 '>Create post</Link>
+		<button onClick={() => handleSubmit()} className='inline-flex pr-4 pl-4 pt-1 pb-1 bg-green-200 hover:bg-green-400 '>Create post</button>
 	)
 }
 
