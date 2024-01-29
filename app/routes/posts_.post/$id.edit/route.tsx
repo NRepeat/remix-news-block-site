@@ -4,17 +4,20 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { validationError } from "remix-validated-form";
 import Form, { postFormValidator } from "~/components/Posts/Form/Form";
-import { getImage } from "~/service/image.server";
-import { getPostById, updatePost } from "~/service/post.server";
+import { getAllImages, getImage } from "~/service/image.server";
+import { connectImageToPost, getPostById, updatePost } from "~/service/post.server";
 
 
 export async function action({ params, request }: ActionFunctionArgs) {
-	console.log("🚀 ~ action ~ request:", request)
-	console.log("🚀 ~ action ~ params:", params)
 	try {
 		const id = params.id
 		if (!id) throw new Error('Not found')
 		const formData = await request.formData()
+		if (formData.get('type') === "media") {
+			const imageId = formData.get("imageId") as string
+			const updatedPost = await connectImageToPost(parseInt(id), parseInt(imageId))
+			return json({ updatedPost })
+		}
 		const validatedFormData = await postFormValidator.validate(formData)
 		if (validatedFormData.error) {
 			return validationError({
@@ -32,7 +35,6 @@ export async function action({ params, request }: ActionFunctionArgs) {
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
-	console.log("🚀 ~ loader ~ params:", params)
 	try {
 		const id = params.id
 		if (!id) throw new Error('Not found')
@@ -42,7 +44,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			image = await getImage(createdPost.imageId)
 		}
 		if (!createdPost) throw new Error('Not found')
-		return json({ createdPost, image })
+		const images = await getAllImages()
+		return json({ createdPost, image, images })
 	} catch (error) {
 		console.log("🚀 ~ loader ~ error:", error)
 		throw new Error("")
@@ -55,7 +58,7 @@ export default function PostsRoute() {
 
 	return (
 		<>
-			<Form createdPost={data.createdPost} image={data.image} />
+			<Form createdPost={data.createdPost} image={data.image} images={data.images} />
 		</>
 	);
 }

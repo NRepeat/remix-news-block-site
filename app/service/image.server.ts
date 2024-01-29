@@ -21,3 +21,12 @@ export const getImage = async (id: number) => {
 		throw new Error('Error get image')
 	}
 }
+
+export const getAllImages = async () => {
+	try {
+		const images = await prisma.image.findMany()
+		return images
+	} catch (error) {
+		throw new Error('Error get image')
+	}
+}
