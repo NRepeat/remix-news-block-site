@@ -6,9 +6,11 @@ import { validationError } from "remix-validated-form";
 import Form, { postFormValidator } from "~/components/Posts/Form/Form";
 import { getAllImages, getImage } from "~/service/image.server";
 import { connectImageToPost, getPostById, updatePost } from "~/service/post.server";
+import { getAllTags } from "~/service/tags.server";
 
 
 export async function action({ params, request }: ActionFunctionArgs) {
+	console.log("🚀 ~ action ~ request:", request)
 	try {
 		const id = params.id
 		if (!id) throw new Error('Not found')
@@ -34,7 +36,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 	}
 }
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
 	try {
 		const id = params.id
 		if (!id) throw new Error('Not found')
@@ -44,10 +46,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			image = await getImage(createdPost.imageId)
 		}
 		if (!createdPost) throw new Error('Not found')
-		const images = await getAllImages()
-		return json({ createdPost, image, images })
+		const url = new URL(request.url)
+		// const search = url.searchParams.get("search")
+
+		const tags = await getAllTags()
+		const page = url.searchParams.get("page") ?? "1"
+		const { images, totalPages } = await getAllImages({
+			page: parseInt(page),
+			pageSize: 10
+		})
+		return json({ createdPost, image, images, totalPages, currentPage: page, tags })
 	} catch (error) {
-		console.log("🚀 ~ loader ~ error:", error)
 		throw new Error("")
 	}
 }
@@ -55,10 +64,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function PostsRoute() {
 	const data = useLoaderData<typeof loader>()
-
 	return (
 		<>
-			<Form createdPost={data.createdPost} image={data.image} images={data.images} />
+			<Form currentPage={parseInt(data.currentPage)} totalPages={data.totalPages} tags={data.tags} createdPost={data.createdPost} image={data.image} images={data.images} />
+
 		</>
 	);
 }

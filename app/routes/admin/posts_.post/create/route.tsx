@@ -6,7 +6,7 @@ import { createPost } from "~/service/post.server";
 export async function action() {
 	try {
 		const createdPost = await createPost()
-		return redirect(`/posts/post/${createdPost.id}/edit`)
+		return redirect(`/admin/posts/post/${createdPost.id}/edit`)
 	} catch (error) {
 		console.log("🚀 ~ loader ~ error:", error)
 		throw new Error("")

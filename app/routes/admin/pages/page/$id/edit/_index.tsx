@@ -47,7 +47,6 @@ export async function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
-  console.log("🚀 ~ action ~  formData:", formData)
   // const postsData = formData.get("posts") as string
   // const posts = JSON.parse(postsData!) as PostWithTags[]
 
@@ -60,7 +59,6 @@ export async function action({ request }: ActionFunctionArgs) {
   //   )}
   if (formData.get("type") === 'drop') {
     const widgets = formData.get("widgets") as string
-    console.log("🚀 ~ action ~ widgets:", widgets)
     await updatePage({
       slug: "main",
       jsonContent: widgets,

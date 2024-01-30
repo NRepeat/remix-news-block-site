@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { ActionFunctionArgs, json, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
 import { createImage } from "~/service/image.server";
 import { connectImageToPost } from "~/service/post.server";
 
@@ -20,12 +20,9 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		request,
 		uploadHandler
 	);
-	console.log(formData)
 
 	const formDataType = formData.get("type") as MediaType
 	const id = (params.id)
-	const headers = new Headers()
-	headers.append('postId', id)
 	if (formDataType === 'url') {
 		const url = formData.get("url") as string
 
@@ -37,17 +34,17 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return {};
+		return json({ success: true });
 	}
 	if (formDataType === "postImage") {
 		const { name } = formData.get("file") as File
 
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return {};
+		return json({ success: true });
 	}
 
-	return {};
+	return json({ success: true });
 }
 
 

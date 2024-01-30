@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { randomNumber } from "~/routes/_index/_index"
+import { randomNumber } from "~/routes/admin/pages/page/$id/edit/_index"
 import { DropInstance, WidgetButton, WidgetInstance } from "~/types/types"
 import WidgetButtonWrapper from "../WidgetButtonWrapper/WidgetButtonWrapper"
 

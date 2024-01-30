@@ -36,24 +36,25 @@ export const mediaUrlValidator = withZod(z.object({
 const MediaForm = ({ action, type, label }: MediaFormType) => {
 	const fetcher = useFetcher()
 
-	return (<>
-		<ValidatedForm validator={mediaValidator} fetcher={fetcher} encType="multipart/form-data" action={action} method="post" navigate={false}>
+	return (<div className="flex flex-col ">
+		<ValidatedForm className={"flex flex-col items-start gap-2  pb-4"} validator={mediaValidator} fetcher={fetcher} encType="multipart/form-data" action={action} method="post" navigate={false}>
 			<label htmlFor="file">{label}</label>
 			<FormInput name='file' type='file' />
 			<FormInput name="type" type="hidden" value={type} />
 
-			<SubmitButton >
-				Save
+			<SubmitButton classNames="rounded-sm pl-4 pr-4 border-2 border-green-200 hover:bg-green-100 " >
+				Save image
 			</SubmitButton>
 		</ValidatedForm>
-		<ValidatedForm validator={mediaUrlValidator} fetcher={fetcher} action={`${action}/url`} method="post" navigate={false}>
-			<FormInput name="url" type="url" label="Url" />
+		<ValidatedForm className="flex flex-col gap-2 items-start border-t-2  border-b-2 pb-2 " validator={mediaUrlValidator} fetcher={fetcher} action={`${action}/url`} method="post" navigate={false}>
+			<p className="text-lg pt-1">Url </p>
+			<FormInput placeholder="Your url" name="url" type="url" label="" />
 			<FormInput type="hidden" value={"url"} name="type" />
-			<SubmitButton >
-				Save
+			<SubmitButton classNames="rounded-sm pl-4 pr-4 border-2 border-sky-200 hover:bg-sky-100 " >
+				Save url
 			</SubmitButton>
 		</ValidatedForm>
-	</>
+	</div>
 
 	)
 }

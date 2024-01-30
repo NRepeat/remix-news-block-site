@@ -1,6 +1,8 @@
 import { FC } from "react"
 import { IoMdClose } from "react-icons/io"
 import styles from './styles.module.css'
+
+
 type ModalType = {
 	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 	children: React.ReactNode

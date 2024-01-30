@@ -1,14 +1,15 @@
 import { Post, Tag } from '@prisma/client'
 import { prisma } from '~/utils/prisma.server'
 
-type createPostType = {
-	data: { slug: string; title: string; content: string; page: string }
-}
 export type PostWithTags = {
 	TagPost: {
 		tag: Tag
 	}[]
 } & Post
+type GetAllPostsParams = {
+	page: number
+	pageSize: number
+}
 export type GetAllPostsType = PostWithTags[]
 type updatePostType = {
 	title?: string
@@ -16,10 +17,21 @@ type updatePostType = {
 	description?: string
 	thumbnail?: string
 }
-export const getAllPosts = async (): Promise<GetAllPostsType> => {
+export const getAllPosts = async ({
+	page,
+	pageSize,
+}: GetAllPostsParams): Promise<{
+	posts: GetAllPostsType
+	totalPages: number
+}> => {
 	try {
-		const posts = await prisma.post.findMany()
-		return posts
+		const posts = await prisma.post.findMany({
+			skip: (page - 1) * pageSize,
+			take: pageSize,
+			include: { TagPost: { select: { tag: true } } },
+		})
+		const totalPostsCount = await prisma.post.count()
+		return { posts, totalPages: Math.ceil(totalPostsCount / pageSize) }
 	} catch (error) {
 		console.log('🚀 ~ getAllPosts ~ error:', error)
 		throw new Error('Get post  error')

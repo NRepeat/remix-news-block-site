@@ -21,7 +21,6 @@ export const connectPostToPostCarousel = async (
 ) => {
 	try {
 		const post = await prisma.post.findUnique({ where: { id: postId } })
-		console.log('🚀 ~ post:', post)
 		const postCarousel = await prisma.postCarousel.findUnique({
 			where: { id: carouselId },
 		})
@@ -44,7 +43,6 @@ export const connectPostToPostCarousel = async (
 	}
 }
 
-// Get all postCarousels
 export const getAllPostCarousels = async () => {
 	try {
 		const allPostCarousels = await prisma.postCarousel.findMany()
@@ -102,7 +100,6 @@ export const updatePostCarousel = async (
 	}
 }
 
-// Delete a postCarousel by ID
 export const deletePostCarousel = async (sliderId: number) => {
 	try {
 		const deletedPostCarousel = await prisma.postCarousel.delete({
