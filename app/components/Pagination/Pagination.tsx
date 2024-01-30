@@ -7,12 +7,11 @@ type PaginationProps = {
 };
 
 const Pagination: FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+	console.log("🚀 ~ totalPages:", totalPages)
 	const pageNumbers: number[] = [];
-	console.log("🚀 ~ pageNumbers:", pageNumbers)
 
 	const generatePageNumbers = (): number[] => {
 		for (let i = 1; i <= totalPages; i++) {
-			console.log("🚀 ~ generatePageNumbers ~ totalPages:", totalPages)
 			pageNumbers.push(i);
 		}
 		return pageNumbers;
@@ -21,7 +20,7 @@ const Pagination: FC<PaginationProps> = ({ currentPage, totalPages, onPageChange
 	return (
 
 		<>
-			{totalPages &&
+			{totalPages > 0 &&
 				<div className="inline-flex w-full justify-center pt-2 ">
 					<ul className="inline-flex w-full justify-center gap-1" >
 						<>

@@ -16,8 +16,8 @@ const ImageForm = ({ id, images, }: ImageFormParams) => {
 
 		submit({ imageId: data.id, type: "media" }, { method: 'post', action: `/admin/posts/post/${data.postId}/edit` })
 	}
-	return <div className="w-full flex  sm:justify-end justify-start min-w-[300px]">
-		<div className="flex flex-col gap-1 w-1/2">
+	return <div className="w-full flex pr-4  justify-end min-w-[300px]">
+		<div className="flex flex-col w-full gap-1 ">
 			<div>
 				<p className="text-xl border-b-2 border-slate-300">Upload image</p>
 				<p className="pt-2">Upload an image file, pick one from your media library, or add one with a URL.</p>

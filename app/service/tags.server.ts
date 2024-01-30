@@ -42,7 +42,17 @@ export const getAllTags = async () => {
 		throw new Error('Failed to get tags')
 	}
 }
-
+export const deleteTag = async (id: number) => {
+	console.log('🚀 ~ deleteTag ~ id:', id)
+	try {
+		const deletedTag = prisma.tag.delete({
+			where: { id },
+		})
+		return deletedTag
+	} catch (error) {
+		throw new Error('Failed to delete tags')
+	}
+}
 export const getPostTags = async (params: type) => {
 	try {
 		const tags = await prisma.tag.findMany({
@@ -81,6 +91,7 @@ export const connectTagsToPost = async ({
 				postId,
 				tagId: tag.id,
 			})),
+			skipDuplicates: true,
 		})
 	} catch (error) {
 		console.error('Error connecting tags to post:', error)

@@ -20,7 +20,7 @@ const PostTable: FC<PostTableType> = ({ posts }) => {
 		navigate(`/admin/posts/post/${postId}/edit`);
 	}
 	return (
-		<table className='table-fixed  p-4  w-full min-h-[300px] '   >
+		<table className='table-fixed  p-4  w-full  '   >
 			<thead className='border-2 border-gray-200  text-pretty '>
 				<tr className='  text-xl uppercase text-left text-gray-600'>
 
@@ -30,9 +30,9 @@ const PostTable: FC<PostTableType> = ({ posts }) => {
 					<th className='pr-4 text-right'>Delete</th>
 				</tr>
 			</thead>
-			<tbody className='odd:bg-slate-300 w-full'>
+			<tbody className='odd:bg-slate-300  w-full'>
 				{posts && posts.map((post) => (
-					<tr className='even:bg-slate-300   cursor-pointer hover:text-white hover:bg-sky-800' key={post.id} onClick={() => handleRowClick(post.id)}>
+					<tr className='even:bg-slate-300    cursor-pointer hover:text-white hover:bg-sky-800' key={post.id} onClick={() => handleRowClick(post.id)}>
 
 						<td className='w-12 pt-4 pb-4 text-center'>{post.id}</td>
 						<td className='pl-4' >{post.title} Title</td>
