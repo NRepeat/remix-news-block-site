@@ -65,9 +65,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export default function PostsRoute() {
 	const data = useLoaderData<typeof loader>()
 	return (
-		<>
+		<div className="min-h-screen">
 			<Form currentPage={parseInt(data.currentPage)} totalPages={data.totalPages} tags={data.tags} createdPost={data.createdPost} image={data.image} images={data.images} />
 
-		</>
+		</div>
 	);
 }

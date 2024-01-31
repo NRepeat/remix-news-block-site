@@ -37,3 +37,14 @@ export const getAllImages = async ({ page, pageSize }: getAllImagesParams) => {
 		throw new Error('Error get image')
 	}
 }
+
+export const deleteImage = async ({ id }: { id: number }) => {
+	try {
+		const deletedImage = await prisma.image.delete({
+			where: { id },
+		})
+		return deletedImage
+	} catch (error) {
+		throw new Error('Error delete image')
+	}
+}

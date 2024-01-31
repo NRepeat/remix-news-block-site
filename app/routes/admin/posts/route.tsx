@@ -28,7 +28,7 @@ export default function PostsRoute() {
 		submit({ page })
 	}
 	return (
-		<div style={{ gridArea: "main" }} className="p-4 h-screen bg-slate-100 ">
+		<div style={{ gridArea: "main" }} className="p-4 min-h-screen bg-slate-100 ">
 			<div className="inline-flex gap-4 items-center pb-4">
 				<p className="text-2xl text-pretty">Posts  	</p><CreateButton />
 			</div>

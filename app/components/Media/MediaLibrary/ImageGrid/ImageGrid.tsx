@@ -1,6 +1,8 @@
 import { Image } from '@prisma/client'
 import { SerializeFrom } from '@remix-run/node'
+import { useSubmit } from '@remix-run/react'
 import React, { FC } from 'react'
+import { IoClose } from 'react-icons/io5'
 
 type ImageGridType = {
 	selectedImage: number | undefined
@@ -9,26 +11,40 @@ type ImageGridType = {
 }
 
 const ImageGrid: FC<ImageGridType> = ({ images, selectedImage, setSelectedImage }) => {
+	console.log("🚀 ~ selectedImage:", selectedImage)
+	const isSelected = (id: number) => selectedImage === id;
+	const submit = useSubmit()
+	const handleDeleteImage = () => {
+		if (selectedImage) {
+			submit({ imageIdToDelete: selectedImage }, { method: 'delete', navigate: false })
+			setSelectedImage(undefined)
+		}
+	}
 	return (
-		<div>					{images && (
-			<div className="flex gap-4 flex-wrap">
-				{images.map((image) => {
-					const imagePath = image.path.includes('/') ? image.path : `/uploads/${image.path}`;
-					const isSelected = selectedImage === image.id;
+		<div>
+			{images && (
+				<div className="flex gap-4 flex-wrap">
+					{images.map((image) => {
+						const imagePath = image.path.includes('/') ? image.path : `/uploads/${image.path}`;
+						return (
+							<div key={image.id} className='relative '>
+								{selectedImage === image.id &&
+									<button className='absolute top-0 right-0' onClick={() => handleDeleteImage()}><IoClose className='fill-red-500 h-[30px] w-[30px] ' />
+									</button>
+								}
+								<img
+									aria-hidden
+									onClick={() => setSelectedImage(image.id)}
+									className={`${isSelected(image.id) ? 'border-sky-600' : 'border-white'} rounded-sm min-w-36 max-w-36 border-2   object-cover max-h-36 min-h-36`}
+									src={imagePath}
+									alt={image.path}
+								/>
+							</div>
 
-					return (
-						<img
-							key={image.id}
-							aria-hidden
-							onClick={() => setSelectedImage(image.id)}
-							className={`${isSelected ? 'border-sky-500' : ''} rounded-sm max-w-36 border-2 border-white object-cover max-h-36`}
-							src={imagePath}
-							alt={image.path}
-						/>
-					);
-				})}
-			</div>
-		)}</div>
+						);
+					})}
+				</div>
+			)}</div>
 	)
 }
 

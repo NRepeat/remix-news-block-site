@@ -25,13 +25,13 @@ export const searchTags = async ({ search }: { search: string }) => {
 		throw new Error('Failed to search tags')
 	}
 }
-export const updateTags = async (params: type) => {
-	try {
-	} catch (error) {
-		console.error('Error updating tags:', error)
-		throw new Error('Failed to update tags')
-	}
-}
+// export const updateTags = async (params: type) => {
+// 	try {
+// 	} catch (error) {
+// 		console.error('Error updating tags:', error)
+// 		throw new Error('Failed to update tags')
+// 	}
+// }
 
 export const getAllTags = async () => {
 	try {
@@ -53,16 +53,16 @@ export const deleteTag = async (id: number) => {
 		throw new Error('Failed to delete tags')
 	}
 }
-export const getPostTags = async (params: type) => {
-	try {
-		const tags = await prisma.tag.findMany({
-			where: {},
-		})
-	} catch (error) {
-		console.error('Error getting post tags:', error)
-		throw new Error('Failed to get post tags')
-	}
-}
+// export const getPostTags = async (params: type) => {
+// 	try {
+// 		const tags = await prisma.tag.findMany({
+// 			where: {},
+// 		})
+// 	} catch (error) {
+// 		console.error('Error getting post tags:', error)
+// 		throw new Error('Failed to get post tags')
+// 	}
+// }
 
 export const connectTagsToPost = async ({
 	postId,
@@ -82,10 +82,17 @@ export const connectTagsToPost = async ({
 			where: { id: { in: tags.map(tag => tag.id) } },
 		})
 
+		if (tags.length === 0) {
+			await prisma.tagPost.deleteMany({
+				where: { postId },
+			})
+		}
 		if (tags.length !== connectTags.length) {
 			throw new Error('Not all tags were found.')
 		}
-
+		await prisma.tagPost.deleteMany({
+			where: { postId },
+		})
 		await prisma.tagPost.createMany({
 			data: connectTags.map(tag => ({
 				postId,

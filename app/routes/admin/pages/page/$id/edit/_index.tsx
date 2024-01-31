@@ -107,11 +107,6 @@ export default function Index() {
     typeof item === 'string' ? JSON.parse(item) : item
   );
 
-
-
-
-
-
   const widgetsButtons: WidgetButton[] = [{ id: `${randomNumber()}`, type: "TextWidget" }, { id: `${randomNumber()}`, type: "CarouselPostWidget" }];
   const dropZones: DropInstance[] = [{ id: `1`, type: "MainPage", name: "Main page widget container " }]
 
@@ -121,7 +116,7 @@ export default function Index() {
     <div className="flex w-screen h-screen bg-gray-100 justify-between gap-4 p-2">
       <WidgetButtonList widgetsArr={widgets} buttons={widgetsButtons} dropZones={dropZones} />
       <div className="w-full  gap-2">
-        {dropZones.map(zone => <DropZoneWrapper key={zone.id} posts={posts} dropZone={zone} widgetsData={widgets} />)}
+        {dropZones.map(zone => <DropZoneWrapper key={zone.id} posts={posts.posts} dropZone={zone} widgetsData={widgets} />)}
       </div>
 
     </div>

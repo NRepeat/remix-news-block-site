@@ -1,4 +1,5 @@
 .grid {
+	background-color: rgb(241 245 249);
 	display: grid;
 	grid-template-columns: 100px auto;
 	grid-template-rows: 3rem auto;

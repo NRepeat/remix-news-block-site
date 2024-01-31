@@ -31,7 +31,7 @@ const Form = ({ createdPost, image, images, tags }: PostFormParams) => {
 		article: createdPost.article || ''
 	}
 	return (
-		<div style={{ gridArea: "main" }} className="flex relative h-screen flex-col p-4  ">
+		<div style={{ gridArea: "main" }} className="flex relative flex-col p-4  ">
 			<p className="w-full text-2xl h-12 border-b-2 border-slate-300">Edit post</p>
 			<div className="w-full inline-flex gap-4 flex-col sm:flex-row">
 				<div className="w-full max-w-[50%] flex  gap-4 flex-col " >
@@ -40,7 +40,7 @@ const Form = ({ createdPost, image, images, tags }: PostFormParams) => {
 						<FormInput name="title" label="Title" placeholder="Title" type="text" />
 						<FormTextArea name="description" label="Description" placeholder="Description" type="text" />
 						<FormTextArea name="article" label="Article" placeholder="Article" type="text" />
-						<SubmitButton classNames="border-2 border-gray-500 w-1/3 hover:bg-green-200">
+						<SubmitButton classNames="border-2 rounded-sm border-gray-500 w-1/3 hover:bg-green-200">
 							Save
 						</SubmitButton>
 
