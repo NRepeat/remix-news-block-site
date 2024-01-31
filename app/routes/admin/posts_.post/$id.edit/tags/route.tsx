@@ -11,6 +11,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		}
 
 		const formData = await request.formData();
+
 		const tagToRemove = formData.get("tagToRemove") as string
 		if (tagToRemove) {
 			await deleteTag(parseInt(tagToRemove))
@@ -39,7 +40,12 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		const createdTags = await createTags({
 			tags: tagsFormData.data.tags.split(','),
 		});
-		console.log("🚀 ~ action ~ createdTags:", createdTags);
+
+		await connectTagsToPost({
+			postId: parseInt(id),
+			tags: createdTags,
+		});
+
 
 		return redirect(`/admin/posts/post/${id}/edit`);
 	} catch (error) {

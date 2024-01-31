@@ -10,6 +10,7 @@ type MyInputProps = {
 	placeholder?: string;
 	value?: number | string | undefined;
 	onChange?: ChangeEventHandler<HTMLTextAreaElement>
+	classNames?: string
 };
 
 const FormTextArea = ({
@@ -18,6 +19,7 @@ const FormTextArea = ({
 	placeholder,
 	value,
 	onChange,
+	classNames
 }: MyInputProps) => {
 	const { error, getInputProps } = useField(name);
 
@@ -28,7 +30,7 @@ const FormTextArea = ({
 					{label}
 				</label>
 				<textarea
-					className='border-2 border-gray-200 pl-1 pb-1 pt-1 rounded-sm min-h-10 '
+					className={`border-2 border-gray-200 pl-1 pb-1 pt-1 rounded-sm min-h-10 ${classNames} `}
 					onChange={onChange}
 					{...getInputProps({ onChange, value, id: name, placeholder, })}
 				/>

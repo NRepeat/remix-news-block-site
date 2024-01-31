@@ -37,13 +37,11 @@ const MediaLibrary: FC<MediaLibraryType> = ({ postId, images, action, setHandler
 
 	const [tabIsOpen, setOpenTab] = useState<boolean>(true)
 	return (
-		<div className="  flex flex-col gap-2 w-full ">
+		<div className="  inline-flex flex-col gap-2  ">
 			<Navigation setOpenTab={setOpenTab} tabIsOpen={tabIsOpen} />
 
 			{tabIsOpen && <div className="w-full inline-flex justify-between">
-				{/* <FormInput type="text" name="" /> */}
-				{/* <select name="" id=""></select>
-				search */}
+
 			</div>}
 			{tabIsOpen ?
 				<>
@@ -51,7 +49,7 @@ const MediaLibrary: FC<MediaLibraryType> = ({ postId, images, action, setHandler
 					<SelectedImage images={images} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
 					<div className="inline-flex items-center w-full justify-center">
 						{setHandler && postId && <>
-							{tabIsOpen && <SelectButton postId={postId} selectedImage={selectedImage} setHandler={setHandler} />}
+							{tabIsOpen && selectedImage && <SelectButton postId={postId} selectedImage={selectedImage} setHandler={setHandler} />}
 						</>
 						}
 					</div>

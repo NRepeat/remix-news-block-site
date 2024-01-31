@@ -6,7 +6,7 @@ import { validationError } from "remix-validated-form";
 import Form, { postFormValidator } from "~/components/Posts/Form/Form";
 import { getAllImages, getImage } from "~/service/image.server";
 import { connectImageToPost, getPostById, updatePost } from "~/service/post.server";
-import { getAllTags } from "~/service/tags.server";
+import { searchTags } from "~/service/tags.server";
 
 
 export async function action({ params, request }: ActionFunctionArgs) {
@@ -48,14 +48,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		if (!createdPost) throw new Error('Not found')
 		const url = new URL(request.url)
 		// const search = url.searchParams.get("search")
+		const query = url.searchParams.get("query")
 
-		const tags = await getAllTags()
+		const tags = await searchTags({ search: query })
 		const page = url.searchParams.get("page") ?? "1"
 		const { images, totalPages } = await getAllImages({
 			page: parseInt(page),
 			pageSize: 10
 		})
-		return json({ createdPost, image, images, totalPages, currentPage: page, tags })
+		return json({ createdPost, image, images, totalPages, currentPage: page, tags, query })
 	} catch (error) {
 		throw new Error("")
 	}
@@ -65,7 +66,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export default function PostsRoute() {
 	const data = useLoaderData<typeof loader>()
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen relative">
 			<Form currentPage={parseInt(data.currentPage)} totalPages={data.totalPages} tags={data.tags} createdPost={data.createdPost} image={data.image} images={data.images} />
 
 		</div>

@@ -3,11 +3,17 @@ import { Tag } from '@prisma/client'
 export const createTags = async ({ tags }: { tags: string[] }) => {
 	try {
 		// Use Prisma's createMany to insert multiple records at once
-		const createdTags = await prisma.tag.createMany({
+		await prisma.tag.createMany({
 			data: tags.map(tag => ({ name: tag, slug: tag })),
 			skipDuplicates: true,
 		})
-
+		const createdTags = await prisma.tag.findMany({
+			where: {
+				slug: {
+					in: tags,
+				},
+			},
+		})
 		return createdTags
 	} catch (error) {
 		console.log('Error creating tags:', error)
@@ -15,10 +21,15 @@ export const createTags = async ({ tags }: { tags: string[] }) => {
 	}
 }
 
-export const searchTags = async ({ search }: { search: string }) => {
+export const searchTags = async ({ search }: { search: string | null }) => {
 	try {
-		const tags = await prisma.tag.findFirst({
-			where: { slug: search },
+		let tags
+		if (!search) {
+			tags = await prisma.tag.findMany()
+			return tags
+		}
+		tags = await prisma.tag.findMany({
+			where: { slug: { startsWith: search.toLowerCase() } },
 		})
 		return tags
 	} catch (error) {
@@ -43,7 +54,6 @@ export const getAllTags = async () => {
 	}
 }
 export const deleteTag = async (id: number) => {
-	console.log('🚀 ~ deleteTag ~ id:', id)
 	try {
 		const deletedTag = prisma.tag.delete({
 			where: { id },
@@ -82,17 +92,6 @@ export const connectTagsToPost = async ({
 			where: { id: { in: tags.map(tag => tag.id) } },
 		})
 
-		if (tags.length === 0) {
-			await prisma.tagPost.deleteMany({
-				where: { postId },
-			})
-		}
-		if (tags.length !== connectTags.length) {
-			throw new Error('Not all tags were found.')
-		}
-		await prisma.tagPost.deleteMany({
-			where: { postId },
-		})
 		await prisma.tagPost.createMany({
 			data: connectTags.map(tag => ({
 				postId,
