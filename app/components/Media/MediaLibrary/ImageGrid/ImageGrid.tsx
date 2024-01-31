@@ -2,22 +2,22 @@ import { Image } from '@prisma/client'
 import { SerializeFrom } from '@remix-run/node'
 import { useSubmit } from '@remix-run/react'
 import React, { FC } from 'react'
-import { IoClose } from 'react-icons/io5'
+import { MdDelete } from 'react-icons/md'
 
 type ImageGridType = {
-	selectedImage: number | undefined
+	selectedImage: number | null
 	images: SerializeFrom<Image[]>
-	setSelectedImage: React.Dispatch<React.SetStateAction<number | undefined>>
+	setSelectedImage: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 const ImageGrid: FC<ImageGridType> = ({ images, selectedImage, setSelectedImage }) => {
-	console.log("🚀 ~ selectedImage:", selectedImage)
+
 	const isSelected = (id: number) => selectedImage === id;
 	const submit = useSubmit()
 	const handleDeleteImage = () => {
 		if (selectedImage) {
 			submit({ imageIdToDelete: selectedImage }, { method: 'delete', navigate: false })
-			setSelectedImage(undefined)
+			setSelectedImage(null)
 		}
 	}
 	return (
@@ -29,7 +29,7 @@ const ImageGrid: FC<ImageGridType> = ({ images, selectedImage, setSelectedImage 
 						return (
 							<div key={image.id} className='relative '>
 								{selectedImage === image.id &&
-									<button className='absolute top-0 right-0' onClick={() => handleDeleteImage()}><IoClose className='fill-red-500 h-[30px] w-[30px] ' />
+									<button className='absolute top-1 right-0' onClick={() => handleDeleteImage()}><MdDelete className='fill-red-500 h-[30px] w-[30px] ' />
 									</button>
 								}
 								<img

@@ -1,4 +1,5 @@
 import { type UniqueIdentifier } from '@dnd-kit/core'
+import { Page } from '@prisma/client'
 import { SerializeFrom } from '@remix-run/node'
 import { FC } from 'react'
 import { PostWithTags } from '~/service/post.server'
@@ -39,6 +40,7 @@ export type Widget = {
 	widget: FC<{
 		widget: WidgetInstance
 		posts?: SerializeFrom<PostWithTags[]>
+		page: SerializeFrom<Page>
 	}>
 }
 export type WidgetsType = {

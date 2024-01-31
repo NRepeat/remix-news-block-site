@@ -17,7 +17,7 @@ const WidgetFormWrapper: FC<WidgetFormWrapperType> = ({ children, widget, }) => 
 	return (
 		<div className={styles.container}>
 			<button className={styles.button} onClick={() => setOpen((prev) => !prev)}>
-				<p>Widget Name {widget.id}</p>
+				<p>{widget.type} {widget.id}</p>
 				<MdArrowDropDown />
 			</button>
 			{open && (

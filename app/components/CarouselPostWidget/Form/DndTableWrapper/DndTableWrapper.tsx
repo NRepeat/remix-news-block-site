@@ -58,7 +58,7 @@ const DndTableWrapper: FC<DndTableWrapper> = ({ children, data, setSelectedPosts
 		}
 	})
 
-	return <div ref={setNodeRef}> {children} </div>
+	return <div className='flex flex-col gap-4 p-4' ref={setNodeRef}> {children} </div>
 }
 
 export default DndTableWrapper

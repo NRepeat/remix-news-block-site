@@ -1,8 +1,8 @@
 import { useDndMonitor } from "@dnd-kit/core"
+import { Page } from "@prisma/client"
 import { SerializeFrom } from "@remix-run/node"
 import { useSubmit } from "@remix-run/react"
 import { FC } from "react"
-import { randomNumber } from "~/routes/admin/pages/page/$id/edit/_index"
 import { GetAllPostsType } from "~/service/post.server"
 import { WidgetInstance } from "~/types/types"
 import DraggableWidgetWrapper from "../DraggableWidgetWrapper/DraggableWidgetWrapper"
@@ -10,10 +10,11 @@ import widgets from "../Widgets/Widgets"
 type WidgetWrapperType = {
 	widgetsData: WidgetInstance[]
 	posts: SerializeFrom<GetAllPostsType>
+	page: SerializeFrom<Page>
 }
 
 
-const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
+const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts, page }) => {
 	const submit = useSubmit()
 	const newWidgetPosition = widgetsData
 
@@ -40,9 +41,7 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 
 				if (draggedWidgetIndex !== -1 && overIndex !== -1) {
 					const [draggedWidget] = newWidgetPosition.splice(draggedWidgetIndex, 1);
-					console.log("🚀 ~ onDragEnd ~ draggedWidget:", draggedWidget)
 					newWidgetPosition.splice(overIndex, 0, draggedWidget);
-					console.log("🚀 ~ onDragEnd ~ newWidgetPosition:", newWidgetPosition)
 
 					submit({ type: "drop", widgets: JSON.stringify(newWidgetPosition) }, { method: "post", navigate: false, })
 
@@ -60,9 +59,9 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({ widgetsData, posts }) => {
 	return (
 		<>
 			{
-				widgetForms.map(({ Form, widget }) => (
-					<DraggableWidgetWrapper key={randomNumber()} widgetData={widget.additionalData} id={widget.id}>
-						<Form key={widget.id} widget={widget} posts={posts} />
+				widgetForms.map(({ Form, widget }, i) => (
+					<DraggableWidgetWrapper key={i} widgetData={widget.additionalData} id={widget.id}>
+						<Form key={widget.id} widget={widget} page={page} posts={posts} />
 					</DraggableWidgetWrapper>
 				))
 			}

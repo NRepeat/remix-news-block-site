@@ -20,7 +20,6 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		request,
 		uploadHandler
 	);
-
 	const formDataType = formData.get("type") as MediaType
 	const id = (params.id)
 	if (formDataType === 'url') {

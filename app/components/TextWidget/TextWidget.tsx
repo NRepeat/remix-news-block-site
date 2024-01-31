@@ -2,7 +2,7 @@ import { Widget, WidgetType } from "~/types/types";
 import Form from "./Form/Form";
 
 const additionalData = {
-	label: 'Text Block',
+	label: 'Text Widget',
 	required: false,
 	placeHolder: 'Text',
 	content: '',

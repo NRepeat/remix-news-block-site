@@ -48,6 +48,7 @@ export const updateElement = async ({
 				content: content,
 			},
 		}
+		console.log('🚀 ~ newElement:', newElement)
 
 		await updatePageContent({
 			content: JSON.stringify(newElement),

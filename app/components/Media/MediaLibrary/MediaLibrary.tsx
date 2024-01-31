@@ -22,31 +22,40 @@ type MediaLibraryType = {
 	postId?: number
 }
 const MediaLibrary: FC<MediaLibraryType> = ({ postId, images, action, setHandler }) => {
+
 	const mediaRoutData = useRouteLoaderData<typeof mediaRouteLoader>("routes/admin/media/route")
 	const postEditRoute = useRouteLoaderData<typeof loader>('routes/admin/posts_.post/$id.edit/route')
 	const routeData = mediaRoutData ?? postEditRoute
 	if (!routeData) throw new Error("Not found")
+
 	const Pagination = usePagination({
 		currentPage: parseInt(routeData.currentPage),
 		totalPages: routeData.totalPages
-
 	})
 
-	const [selectedImage, setSelectedImage] = useState<number>()
+	const [selectedImage, setSelectedImage] = useState<number | null>(null)
 
 	const [tabIsOpen, setOpenTab] = useState<boolean>(true)
 	return (
-		<div className=" p-4 flex flex-col gap-2 w-full ">
+		<div className="  flex flex-col gap-2 w-full ">
 			<Navigation setOpenTab={setOpenTab} tabIsOpen={tabIsOpen} />
+
 			{tabIsOpen && <div className="w-full inline-flex justify-between">
 				{/* <FormInput type="text" name="" /> */}
-				<select name="" id=""></select>
-				search
+				{/* <select name="" id=""></select>
+				search */}
 			</div>}
 			{tabIsOpen ?
 				<>
-					<SelectedImage images={images} selectedImage={selectedImage} />
-					<div className="w-full ">
+
+					<SelectedImage images={images} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+					<div className="inline-flex items-center w-full justify-center">
+						{setHandler && postId && <>
+							{tabIsOpen && <SelectButton postId={postId} selectedImage={selectedImage} setHandler={setHandler} />}
+						</>
+						}
+					</div>
+					<div className="w-full min-w-[500px] max-h-screen overflow-y-auto p-4 ">
 						<ImageGrid images={images} selectedImage={selectedImage} setSelectedImage={setSelectedImage} />
 						<div className="w-full ">
 							{Pagination}
@@ -54,12 +63,7 @@ const MediaLibrary: FC<MediaLibraryType> = ({ postId, images, action, setHandler
 					</div>
 				</>
 				: <MediaForm action={action} type="postImage" label="" />}
-			<div className="inline-flex items-center w-full justify-center">
-				{setHandler && postId && <>
-					{tabIsOpen && <SelectButton postId={postId} selectedImage={selectedImage} setHandler={setHandler} />}
-				</>
-				}
-			</div>
+
 		</div>
 	)
 }

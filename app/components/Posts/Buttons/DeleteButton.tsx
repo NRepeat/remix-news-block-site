@@ -8,7 +8,7 @@ const DeleteButton = ({ id }: { id: number }) => {
 		submit({ id }, { action: `/admin/posts/post/${id}/delete`, navigate: false, method: 'delete' })
 	}
 	return (
-		<button onClick={(e) => handleDelete(e)} className='inline-flex justify-center items-center    pt-1 '> <MdDelete className='fill-red-500 h-5 w-5' /></button>
+		<button onClick={(e) => handleDelete(e)} className='inline-flex justify-center items-center     '> <MdDelete className='fill-red-500 h-6 w-6' /></button>
 	)
 }
 

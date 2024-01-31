@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 type SelectButtonType = {
-	selectedImage: number | undefined,
+	selectedImage: number | null,
 	setHandler: (data: {
 		id: number;
 		postId: number;

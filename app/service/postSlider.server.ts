@@ -16,24 +16,29 @@ export const createPostCarousel = async () => {
 }
 
 export const connectPostToPostCarousel = async (
-	postId: number,
+	postId: number[],
 	carouselId: number
 ) => {
 	try {
-		const post = await prisma.post.findUnique({ where: { id: postId } })
+		const posts = await prisma.post.findMany({
+			where: { id: { in: postId } },
+		})
+
 		const postCarousel = await prisma.postCarousel.findUnique({
 			where: { id: carouselId },
 		})
 
-		if (!post || !postCarousel) {
-			throw new Error('Post or post carousel not found')
+		if (!posts || posts.length !== postId.length || !postCarousel) {
+			throw new Error('One or more posts or the post carousel were not found.')
 		}
 
-		await prisma.postCarouselPost.create({
-			data: {
-				postId: postId,
-				postCarouselId: carouselId,
-			},
+		const postCarouselPosts = postId.map(id => ({
+			postId: id,
+			postCarouselId: carouselId,
+		}))
+
+		await prisma.postCarouselPost.createMany({
+			data: postCarouselPosts,
 		})
 
 		return 'Successfully connected post to post carousel'

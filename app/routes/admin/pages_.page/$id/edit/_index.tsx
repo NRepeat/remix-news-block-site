@@ -1,15 +1,14 @@
-import { json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { LoaderFunctionArgs, json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import DropZone from "~/components/DropZone/DropZone";
 import { textValidator } from "~/components/TextWidget/Form/Form";
-import WidgetButtonList from "~/components/WidgetList/WidgetList";
-import DropZoneWrapper from "~/components/ZoneWrapper/ZoneWrapper";
 import { getPage, updatePage, updatePageContent } from "~/service/page.server";
-import { getAllPosts } from "~/service/post.server";
+import { PostWithTags, getAllPosts } from "~/service/post.server";
+import { connectPostToPostCarousel, createPostCarousel } from "~/service/postSlider.server";
 import { removeElement, updateElement } from "~/service/widget.server";
-import { DropInstance, WidgetButton, WidgetInstance } from "~/types/types";
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,10 +25,14 @@ export const buttonFromDataValidator = withZod(
     index: zfd.text()
   })
 )
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
   try {
     // const page = await getPage({ slug: "main" })
-    const posts = await getAllPosts()
+    const url = new URL(request.url)
+    const currentPage = url.searchParams.get("page") ?? "1"
+    const { totalPages, posts } = await getAllPosts({
+      page: parseInt(currentPage), pageSize: 10
+    })
     const page = await getPage({ slug: "main" })
     if (!page) throw new Error('Not found')
     // console.log("🚀 ~ loader ~  page:", page)
@@ -38,7 +41,7 @@ export async function loader() {
     //   return json({ page, posts })
     // }
     // // await updatePage({ slug: page.slug, jsonContent: content })
-    return json({ posts, page })
+    return json({ posts, page, totalPages })
   } catch (error) {
     console.log("🚀 ~ loader ~ error:", error)
     throw new Error("s")
@@ -47,28 +50,33 @@ export async function loader() {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
-  // const postsData = formData.get("posts") as string
-  // const posts = JSON.parse(postsData!) as PostWithTags[]
+  console.log("🚀 ~ action ~ formData:", formData)
+  const postsData = formData.get("posts") as string
 
-  // if (posts) {
-  //   const c = await createPostCarousel()
-  //   console.log("🚀 ~ action ~ posts:", posts)
-  //   posts.map(async post =>
-  //     await connectPostToPostCarousel(post, 1)
+  if (postsData) {
+    const id = formData.get("id") as string
+    console.log("🚀 ~ action ~ id :", id)
+    const posts = JSON.parse(postsData) as PostWithTags[]
+    console.log("🚀 ~ action ~ posts:", posts)
 
-  //   )}
+    const postCarousel = await createPostCarousel()
+    console.log("🚀 ~ action ~ postCarousel:", postCarousel)
+    await connectPostToPostCarousel(posts, postCarousel.id)
+    await updateElement({ content: JSON.stringify({ posts }), id, slug: "main" });
+    return json({ success: true })
+  }
   if (formData.get("type") === 'drop') {
     const widgets = formData.get("widgets") as string
     await updatePage({
       slug: "main",
       jsonContent: widgets,
     });
-    return {}
+    return json({ success: true })
   }
   if (formData.get("type") === 'delete') {
     const id = formData.get("widgetId") as string
     await removeElement({ id, slug: 'main' })
-    return {}
+    return json({ success: true })
   }
   if (formData.get("type") === 'textWidget') {
     const validatedTextWidgetData = await textValidator.validate(formData)
@@ -78,10 +86,11 @@ export async function action({ request }: ActionFunctionArgs) {
     const { id, text, title } = validatedTextWidgetData.data
 
     await updateElement({ content: JSON.stringify({ text, title }), id, slug: "main" });
-    return { text }
+    return json({ success: true })
   }
 
   const validatedData = await buttonFromDataValidator.validate(formData)
+  console.log("🚀 ~ action ~ validatedData:", validatedData)
   if (validatedData.error) {
     throw new Error("Bad request")
   }
@@ -97,28 +106,19 @@ export async function action({ request }: ActionFunctionArgs) {
   return json({ newWidget })
 
 }
-export const randomNumber = () => { return Math.floor(Math.random() * 10000) }
-
 
 export default function Index() {
   const { posts, page } = useLoaderData<typeof loader>()
-  const content = JSON.parse(page.content ? page.content : '[]') as [];
-  const widgets: WidgetInstance[] = content.map((item) =>
-    typeof item === 'string' ? JSON.parse(item) : item
-  );
 
-  const widgetsButtons: WidgetButton[] = [{ id: `${randomNumber()}`, type: "TextWidget" }, { id: `${randomNumber()}`, type: "CarouselPostWidget" }];
-  const dropZones: DropInstance[] = [{ id: `1`, type: "MainPage", name: "Main page widget container " }]
+
 
 
 
   return (
-    <div className="flex w-screen h-screen bg-gray-100 justify-between gap-4 p-2">
-      <WidgetButtonList widgetsArr={widgets} buttons={widgetsButtons} dropZones={dropZones} />
-      <div className="w-full  gap-2">
-        {dropZones.map(zone => <DropZoneWrapper key={zone.id} posts={posts.posts} dropZone={zone} widgetsData={widgets} />)}
-      </div>
+    <div style={{ gridArea: "main" }} className="flex flex-col relative bg-gray-100  p-4">
+      <p className="text-2xl pb-4 border-b-2 text-pretty">Edit page 	</p>
 
+      <DropZone page={page} posts={posts} />
     </div>
 
   );

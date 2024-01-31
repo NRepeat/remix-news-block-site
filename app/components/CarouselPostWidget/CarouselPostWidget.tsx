@@ -1,11 +1,24 @@
-import { Widget } from "~/types/types"
-import Form from "./Form/Form"
+import { Widget, WidgetType } from "~/types/types";
+import Form from "./Form/Form";
 
+const additionalData = {
+	label: 'Post Carousel Widget',
+	required: false,
+	placeHolder: 'Post Carousel ',
+	content: '',
+};
+const type: WidgetType = "CarouselPostWidget"
 const carouselPostWidget: Widget = {
-	type: "CarouselPostWidget",
+	type,
 	name: "Post Carousel",
+	construct: ({ id, containerId }) => ({
+		id,
+		containerId,
+		type,
+		additionalData
+	}),
 	button: { name: "Post Carousel" },
-	form: Form,
+	widget: Form,
 }
 
 export default carouselPostWidget

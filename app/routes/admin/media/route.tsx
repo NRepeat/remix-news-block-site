@@ -39,9 +39,12 @@ export default function MediaRoute() {
 	const data = useLoaderData<typeof loader>()
 
 	return (
-		<>
+		<div className="flex flex-col p-4">
+			<div className="inline-flex gap-4 items-center pb-4">
+				<p className="text-2xl text-pretty">Media	</p>
+			</div>
 			<MediaLibrary action="/admin/media/upload" images={data.images} />
 
-		</>
+		</div>
 	);
 }

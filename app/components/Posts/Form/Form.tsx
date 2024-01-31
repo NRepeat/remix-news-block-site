@@ -34,7 +34,7 @@ const Form = ({ createdPost, image, images, tags }: PostFormParams) => {
 		<div style={{ gridArea: "main" }} className="flex relative flex-col p-4  ">
 			<p className="w-full text-2xl h-12 border-b-2 border-slate-300">Edit post</p>
 			<div className="w-full inline-flex gap-4 flex-col sm:flex-row">
-				<div className="w-full max-w-[50%] flex  gap-4 flex-col " >
+				<div className="w-full min -w-[70%] flex  gap-4 flex-col " >
 					<ValidatedForm defaultValues={defaultValues} className="flex gap-4 flex-col   min-w-[300px] " validator={postFormValidator} method="post" navigate={false} >
 						<FormInput name="id" value={createdPost.id} type="hidden" />
 						<FormInput name="title" label="Title" placeholder="Title" type="text" />
@@ -49,18 +49,10 @@ const Form = ({ createdPost, image, images, tags }: PostFormParams) => {
 
 				</div>
 
-				<div className="w-ful">
-					{image && <div className="   flex-col w-full min-w-[300px] flex  ">
-						<p className="w-full">Post image preview</p>
-						{image && (
-							<img
-								className="w-full max-h-64 object-cover rounded-sm "
-								src={image.path.includes("https") ? image.path : `/uploads/${image.path}`}
-								alt={image.path}
-							/>
-						)}
-					</div>}
-					<ImageForm id={createdPost.id} images={images} />
+				<div className="w-30% pt-4">
+
+
+					<ImageForm image={image} id={createdPost.id} images={images} />
 
 				</div>
 
