@@ -5,7 +5,7 @@ import {
 	useDroppable, useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import { Page } from '@prisma/client'
+import { Image, Page } from '@prisma/client'
 import { SerializeFrom } from '@remix-run/node'
 import { FC, useState } from 'react'
 import { MdArrowDropDown } from 'react-icons/md'
@@ -20,10 +20,11 @@ type DropZoneWrapperType = {
 	dropZone: DropInstance
 	widgetsData?: WidgetInstance[]
 	posts: SerializeFrom<GetAllPostsType>
+	images: SerializeFrom<Image[]>
 	page: SerializeFrom<Page>
 }
 
-const DropZoneWrapper: FC<DropZoneWrapperType> = ({ page, dropZone, widgetsData, posts }) => {
+const DropZoneWrapper: FC<DropZoneWrapperType> = ({ images, page, dropZone, widgetsData, posts }) => {
 	const [open, setOpen] = useState<boolean>(true)
 
 	const mouseSensor = useSensor(MouseSensor, {
@@ -46,7 +47,8 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ page, dropZone, widgetsData,
 
 
 	return (
-		<div className='w-full mb-1 border-2 rounded-sm  bg-slate-50   border-gray-300 min-h-12' >
+		<div className='w-full mb-1 border-2 rounded-sm  bg-slate-50  
+		 border-gray-300 min-h-12' >
 			<button onClick={() => setOpen(prev => !prev)} className='flex w-full justify-between items-center pr-2'>
 
 				<p className='h-12 flex items-center  pl-2'  >{dropZone.name}</p>
@@ -55,7 +57,7 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ page, dropZone, widgetsData,
 			{open &&
 				<DndContext sensors={sensors}>
 					<div ref={setNodeRef}>
-						{widgetsData && <WidgetWrapper page={page} posts={posts} widgetsData={widgetsData} />}
+						{widgetsData && <WidgetWrapper page={page} images={images} posts={posts} widgetsData={widgetsData} />}
 						{widgetsData?.length === 0 && <div className='w-full min-h-12 bg-gray-200 flex items-center pl-4 '>No widgets added eat </div>}
 
 					</div>

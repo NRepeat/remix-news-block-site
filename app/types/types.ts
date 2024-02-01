@@ -1,10 +1,13 @@
 import { type UniqueIdentifier } from '@dnd-kit/core'
-import { Page } from '@prisma/client'
+import { Image, Page } from '@prisma/client'
 import { SerializeFrom } from '@remix-run/node'
 import { FC } from 'react'
 import { PostWithTags } from '~/service/post.server'
 
-export type WidgetType = 'TextWidget' | 'CarouselPostWidget'
+export type WidgetType =
+	| 'TextWidget'
+	| 'CarouselPostWidget'
+	| 'CarouselImageWidget'
 export type WidgetDataType = {
 	text?: string
 	title?: string
@@ -40,6 +43,7 @@ export type Widget = {
 	widget: FC<{
 		widget: WidgetInstance
 		posts?: SerializeFrom<PostWithTags[]>
+		images?: SerializeFrom<Image[]>
 		page: SerializeFrom<Page>
 	}>
 }

@@ -6,7 +6,7 @@ import { MdDelete } from 'react-icons/md'
 
 type ImageGridType = {
 	selectedImage: number | null
-	images: SerializeFrom<Image[]>
+	images?: SerializeFrom<Image[]>
 	setSelectedImage: React.Dispatch<React.SetStateAction<number | null>>
 }
 
@@ -16,7 +16,7 @@ const ImageGrid: FC<ImageGridType> = ({ images, selectedImage, setSelectedImage 
 	const submit = useSubmit()
 	const handleDeleteImage = () => {
 		if (selectedImage) {
-			submit({ imageIdToDelete: selectedImage }, { method: 'delete', navigate: false })
+			submit({ imageIdToDelete: selectedImage }, { method: 'delete', navigate: false, action: "/admin/media" })
 			setSelectedImage(null)
 		}
 	}

@@ -48,9 +48,7 @@ export const getPage = async ({ slug }: { slug: string }) => {
 	try {
 		const pageContent = await prisma.page.findUnique({
 			where: { slug },
-			select: { content: true },
 		})
-		console.log('🚀 ~ getPage ~ pageContent:', pageContent)
 		return pageContent
 	} catch (error) {
 		console.log('🚀 ~ getPageContent ~ error:', error)
@@ -83,11 +81,12 @@ export const updatePageContent = async ({
 		const prevContent = await getPageContent({ slug })
 		const parsedContent = JSON.parse(content)
 		const newContent = []
-		if (prevContent?.content === '') {
+		if (prevContent?.content === '' || prevContent?.content === 'undefined') {
 			newContent.push(parsedContent)
 		}
 		if (prevContent?.content) {
 			const parsedArray = JSON.parse(prevContent.content) as Array<[]>
+			console.log('🚀 ~ parsedArray :', parsedArray)
 
 			newContent.push(
 				...parsedArray.map(item =>
@@ -105,7 +104,7 @@ export const updatePageContent = async ({
 
 			newContent.splice(index, 0, JSON.parse(content))
 		}
-
+		console.log('🚀 ~ newContent:', newContent)
 		const pageContent = await prisma.page.update({
 			where: { slug },
 			data: { content: JSON.stringify(newContent) },

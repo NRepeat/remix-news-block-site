@@ -15,7 +15,7 @@ const Navigation: FC<NavigationType> = ({ setOpenTab, tabIsOpen }) => {
 				Select
 			</button>
 			<button
-				onClick={() => setOpenTab(false)}
+				onClick={() => setOpenTab(prev => !prev)}
 				className={`rounded-sm border-2 p-2 ${!tabIsOpen ? 'bg-gray-200' : ''}`}
 			>
 				Upload

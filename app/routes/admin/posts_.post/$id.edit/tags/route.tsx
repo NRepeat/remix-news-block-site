@@ -49,7 +49,6 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
 		return redirect(`/admin/posts/post/${id}/edit`);
 	} catch (error) {
-		console.log("🚀 ~ action ~ error:", error);
 		throw new Error("Bad request");
 	}
 }

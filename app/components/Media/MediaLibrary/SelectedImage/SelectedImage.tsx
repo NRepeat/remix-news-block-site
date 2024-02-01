@@ -6,7 +6,7 @@ import { IoClose } from 'react-icons/io5'
 
 type SelectedImageType = {
 	selectedImage: number | null
-	images: SerializeFrom<Image[]>
+	images?: SerializeFrom<Image[]>
 	setSelectedImage: React.Dispatch<React.SetStateAction<number | null>>
 }
 const SelectedImage: FC<SelectedImageType> = ({ images, selectedImage, setSelectedImage }) => {
@@ -19,7 +19,7 @@ const SelectedImage: FC<SelectedImageType> = ({ images, selectedImage, setSelect
 			}
 
 			{selectedImage &&
-				images.map((image) =>
+				images?.map((image) =>
 					image.id === selectedImage ? (
 						<img
 							className="object-cover w-full max-h-[300px]"

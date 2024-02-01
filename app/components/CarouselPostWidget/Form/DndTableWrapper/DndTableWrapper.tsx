@@ -2,6 +2,7 @@ import { useDndMonitor, useDroppable } from '@dnd-kit/core'
 import { SerializeFrom } from '@remix-run/node'
 import React, { FC, useEffect, useState } from 'react'
 import { GetAllPostsType } from '~/service/post.server'
+import { randomId } from '~/utils/randomId'
 
 type DndTableWrapper = {
 	children: React.ReactNode
@@ -14,7 +15,7 @@ type DndTableWrapper = {
 
 const DndTableWrapper: FC<DndTableWrapper> = ({ children, data, setSelectedPosts }) => {
 	const { setNodeRef } = useDroppable({
-		id: 'post-edit-widget',
+		id: 'post-edit-widget' + randomId(),
 	});
 	const [newDataPosition, setDataPosition] = useState<SerializeFrom<GetAllPostsType> | null>()
 	useEffect(() => {

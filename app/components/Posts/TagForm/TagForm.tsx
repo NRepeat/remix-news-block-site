@@ -67,7 +67,7 @@ const TagForm: FC<TagFormType> = ({ post, tags }) => {
 						fetcher.submit(event.currentTarget.form)
 					}} />
 
-					{fetcher.data && fetcher.data.query && Array.isArray(fetcher.data.tags) && fetcher.data.tags.length > 1 && !selectedTag.some(tag => tag.slug === fetcher.data?.query) && <ul className="flex  bg-white border-2 p-4 gap-2 max-h-[300px] overflow-auto flex-wrap w-full">
+					{fetcher.data && fetcher.data.query && Array.isArray(fetcher.data.tags) && fetcher.data.tags.length >= 1 && <ul className="flex  bg-white border-2 p-4 gap-2 max-h-[300px] overflow-auto flex-wrap w-full">
 						{
 
 							fetcher.data.tags.map(tag => (

@@ -21,9 +21,9 @@ const WidgetFormWrapper: FC<WidgetFormWrapperType> = ({ children, widget, }) => 
 				<MdArrowDropDown />
 			</button>
 			{open && (
-				<>
+				<div className='p-4'>
 					{children}
-				</>
+				</div>
 			)}
 		</div>
 	)

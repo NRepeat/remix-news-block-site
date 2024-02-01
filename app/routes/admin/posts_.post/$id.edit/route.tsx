@@ -10,7 +10,6 @@ import { searchTags } from "~/service/tags.server";
 
 
 export async function action({ params, request }: ActionFunctionArgs) {
-	console.log("🚀 ~ action ~ request:", request)
 	try {
 		const id = params.id
 		if (!id) throw new Error('Not found')

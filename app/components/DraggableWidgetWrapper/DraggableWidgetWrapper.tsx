@@ -11,7 +11,9 @@ type DraggableWidgetWrapperType = {
 }
 
 const DraggableWidgetWrapper: FC<DraggableWidgetWrapperType> = ({ id, children, widgetData }) => {
+
 	const droppableTop = useDroppable({
+
 		id: id + '-top',
 		data: {
 			id,

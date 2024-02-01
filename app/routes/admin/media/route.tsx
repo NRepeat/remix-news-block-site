@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react";
 import MediaLibrary from "~/components/Media/MediaLibrary/MediaLibrary";
 import { deleteImage, getAllImages } from "~/service/image.server";
@@ -28,7 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		if (imageIdToDelete) {
 			await deleteImage({ id: parseInt(imageIdToDelete) })
 		}
-		return redirect('/admin/media')
+		return json({ success: true })
 
 	} catch (error) {
 		throw new Error("Bad response")

@@ -20,11 +20,9 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({ button, dropZones, widge
 	const widgetButtonData = widgets[type].button
 	const sub = useSubmit()
 	const addWidgetToContainer = (containerId: string | UniqueIdentifier) => {
-		console.log("🚀 ~ addWidgetToContainer ~ containerId:", containerId)
 		const newFormData = new FormData()
 		const newElement = widgets[type].construct({ id: `widget-button-${id}`, containerId });
 		const stringifiedNewElement = JSON.stringify(newElement)
-		console.log("🚀 ~ addWidgetToContainer ~ newElement:", newElement)
 		newFormData.set("page", "main")
 		newFormData.set("newElement ", stringifiedNewElement)
 		newFormData.set("index", `${widgetsArr?.length}`)

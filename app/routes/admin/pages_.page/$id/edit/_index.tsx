@@ -1,14 +1,18 @@
 import { LoaderFunctionArgs, json, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
+import { validationError } from "remix-validated-form";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
-import DropZone from "~/components/DropZone/DropZone";
+import { postCarouselFormValidator } from "~/components/CarouselPostWidget/Form/Form";
+import EditPage from "~/components/EditPage/EditPage";
 import { textValidator } from "~/components/TextWidget/Form/Form";
+import { getAllImages } from "~/service/image.server";
 import { getPage, updatePage, updatePageContent } from "~/service/page.server";
-import { PostWithTags, getAllPosts } from "~/service/post.server";
+import { getAllPosts, getLatestPosts, getPostsByRating } from "~/service/post.server";
 import { connectPostToPostCarousel, createPostCarousel } from "~/service/postSlider.server";
 import { removeElement, updateElement } from "~/service/widget.server";
+import { createImageCarouselAction } from "./createImageCarouselAction";
 
 export const meta: MetaFunction = () => {
   return [
@@ -27,21 +31,19 @@ export const buttonFromDataValidator = withZod(
 )
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
-    // const page = await getPage({ slug: "main" })
     const url = new URL(request.url)
     const currentPage = url.searchParams.get("page") ?? "1"
-    const { totalPages, posts } = await getAllPosts({
+    const { totalPages: totalPostsPages, posts } = await getAllPosts({
       page: parseInt(currentPage), pageSize: 10
     })
     const page = await getPage({ slug: "main" })
+    console.log("🚀 ~ loader ~ page:", page)
     if (!page) throw new Error('Not found')
-    // console.log("🚀 ~ loader ~  page:", page)
-    // if(page.elements){
-    //   const content = JSON.stringify(page.elements)
-    //   return json({ page, posts })
-    // }
-    // // await updatePage({ slug: page.slug, jsonContent: content })
-    return json({ posts, page, totalPages })
+    const { images, totalPages: totalImagePages } = await getAllImages({
+      page: parseInt(currentPage),
+      pageSize: 10
+    })
+    return json({ posts, page, totalPostsPages, images, totalImagePages, currentPage })
   } catch (error) {
     console.log("🚀 ~ loader ~ error:", error)
     throw new Error("s")
@@ -51,19 +53,46 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   console.log("🚀 ~ action ~ formData:", formData)
+  if (formData.has("imagesIds")) {
+    await createImageCarouselAction({ formData })
+    return json({ success: true })
+  }
   const postsData = formData.get("posts") as string
 
   if (postsData) {
-    const id = formData.get("id") as string
-    console.log("🚀 ~ action ~ id :", id)
-    const posts = JSON.parse(postsData) as PostWithTags[]
-    console.log("🚀 ~ action ~ posts:", posts)
+    const validatedData = await postCarouselFormValidator.validate(formData)
+    if (validatedData.error) {
+      return validationError({
+        fieldErrors: { id: "Not valid data" }
+      })
+    }
+    const { id, type, posts, quantity, order, carouselId } = validatedData.data
 
-    const postCarousel = await createPostCarousel()
-    console.log("🚀 ~ action ~ postCarousel:", postCarousel)
-    await connectPostToPostCarousel(posts, postCarousel.id)
-    await updateElement({ content: JSON.stringify({ posts }), id, slug: "main" });
-    return json({ success: true })
+    let existCarouselId = carouselId
+    if (!carouselId) {
+      const postCarousel = await createPostCarousel()
+      existCarouselId = postCarousel.id
+    }
+
+    if (posts && type === "manual") {
+      await connectPostToPostCarousel(JSON.parse(posts) as number[], existCarouselId!)
+      await updateElement({ content: JSON.stringify({ carouselId: existCarouselId, postsIds: posts, type }), id, slug: "main" });
+      return json({ success: true })
+    }
+    if (type === "latest") {
+      const latestPost = await getLatestPosts({ quantity: quantity ? quantity : 10 })
+      const postsIds = latestPost.map(post => post.id)
+      await connectPostToPostCarousel(postsIds, existCarouselId!)
+      await updateElement({ content: JSON.stringify({ postsIds, type, existCarouselId }), id, slug: "main" });
+      return json({ success: true })
+    }
+    if (type === "popular") {
+      const latestPost = await getPostsByRating({ quantity: quantity ? quantity : 10, order: order === 'asc' ? order : 'desc' })
+      const postsIds = latestPost.map(post => post.id)
+      await connectPostToPostCarousel(postsIds, existCarouselId!)
+      await updateElement({ content: JSON.stringify({ postsIds, type, existCarouselId }), id, slug: "main" });
+      return json({ success: true })
+    }
   }
   if (formData.get("type") === 'drop') {
     const widgets = formData.get("widgets") as string
@@ -97,6 +126,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const slug = validatedData.data.page
   const newWidget = JSON.stringify(validatedData.data.newElement)
+  console.log("🚀 ~ action ~ newWidget:", newWidget)
   const index = validatedData.data.index
   await updatePageContent({
     index: parseInt(index),
@@ -108,18 +138,13 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Index() {
-  const { posts, page } = useLoaderData<typeof loader>()
-
+  const { posts, page, images } = useLoaderData<typeof loader>()
 
 
 
 
   return (
-    <div style={{ gridArea: "main" }} className="flex flex-col relative bg-gray-100  p-4">
-      <p className="text-2xl pb-4 border-b-2 text-pretty">Edit page 	</p>
-
-      <DropZone page={page} posts={posts} />
-    </div>
+    <EditPage images={images} page={page} posts={posts} />
 
   );
 }

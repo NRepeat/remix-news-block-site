@@ -19,7 +19,7 @@ export const textValidator = withZod(
 	z.object({
 		title: zfd.text(z.string().min(5).max(15)),
 		text: zfd.text(z.string().min(10).max(500)),
-		id: z.string(),
+		id: z.coerce.string(),
 		type: z.string()
 	})
 );

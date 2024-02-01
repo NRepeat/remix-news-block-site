@@ -23,7 +23,7 @@ const ImageForm = ({ id, images, image }: ImageFormParams) => {
 			<CustomDropzone image={image} action={`/admin/posts/post/${id}/create/upload`} />
 		</div>
 		{open && <Modal setIsOpen={setIsOpen} head="Select or Upload Media">
-			<MediaLibrary setHandler={setImageHandler} postId={id} action={`/admin/posts/post/${id}/create/upload`} images={images} />
+			<MediaLibrary setPostImageHandler={setImageHandler} postId={id} action={`/admin/posts/post/${id}/create/upload`} images={images} />
 		</Modal>}
 	</div>
 

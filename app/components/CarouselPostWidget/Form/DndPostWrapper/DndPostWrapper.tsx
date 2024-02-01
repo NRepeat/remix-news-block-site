@@ -25,10 +25,23 @@ const DndPostWrapper = ({ post }: { post: SerializeFrom<PostWithTags> }) => {
 
 	return <>
 		{
-			post && <div className='relative p-5 border-2 border-gray-400' ref={setDraggableNodeRef} {...attributes} {...listeners} key={post.id}>
+			post && <div className='relative  inline-flex gap-5 rounded-sm border-2 border-gray-400' ref={setDraggableNodeRef} {...attributes} {...listeners} key={post.id}>
 				<div ref={droppableTop.setNodeRef} className={styles.topArea} />
+				<p className='pl-1 border-r-2 w-1/6'>
+					ID:
+					{post.id}
 
-				{post.title}
+				</p>
+				<p className='w-1/2 border-r-2'>
+					Title:
+					{post.title}
+
+				</p>
+				<p className='pr-1 w-1/6'>
+					Rating:
+					{post.rating}/5
+
+				</p>
 				<div ref={droppableBottom.setNodeRef} className={styles.bottomArea} />
 			</div>}
 	</>

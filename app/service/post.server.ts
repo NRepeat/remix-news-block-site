@@ -117,3 +117,41 @@ export const connectImageToPost = async (id: number, imageId: number) => {
 		throw new Error('Create post error')
 	}
 }
+
+export const getLatestPosts = async ({
+	quantity,
+}: {
+	quantity: number
+}): Promise<Post[]> => {
+	try {
+		const posts = await prisma.post.findMany({
+			take: quantity,
+			orderBy: { createdAt: 'desc' },
+		})
+
+		return posts
+	} catch (error) {
+		throw new Error('Error find latest posts')
+	}
+}
+type order = 'asc' | 'desc'
+
+export const getPostsByRating = async ({
+	quantity,
+	order,
+}: {
+	quantity: number
+	order: order
+}) => {
+	try {
+		const posts = await prisma.post.findMany({
+			take: quantity,
+			orderBy: { rating: order },
+		})
+
+		return posts
+	} catch (error) {
+		console.log('🚀 ~ error:', error)
+		throw new Error('Error find latest posts')
+	}
+}
