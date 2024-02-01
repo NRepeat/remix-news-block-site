@@ -1,5 +1,7 @@
+import { DndContext, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { Image, Page } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
+import { useSubmit } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import { useEffect, useState } from "react";
 import { ValidatedForm } from "remix-validated-form";
@@ -10,6 +12,7 @@ import { SubmitButton } from "~/components/UI/SubmitButton/SubmitButton";
 import FormInput from "~/components/UI/ValidatedFormInput/ValidatedFormInput";
 import WidgetFormWrapper from "~/components/WidgetFormWrapper/WidgetFormWrapper";
 import { WidgetInstance } from "~/types/types";
+import DragOverlayWrapper from "../DragOverlayWrapper/DragOverlayWrapper";
 import Table from "../Table/Table";
 
 type ImageCarouselFormType = {
@@ -45,7 +48,19 @@ const Form = ({ page, widget, images }: ImageCarouselFormType) => {
 			}
 		}
 	}, [images, page, widget.id]);
+	const mouseSensor = useSensor(MouseSensor, {
+		activationConstraint: {
+			distance: 20,
+		},
+	});
+	const sensors = useSensors(mouseSensor);
 	const selectedImages = selectImages.map(id => images?.find(image => image.id === id)).filter(post => post !== undefined)
+	const submit = useSubmit()
+	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault()
+		submit({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", navigate: false });
+	};
+
 	return (
 		<WidgetFormWrapper widget={widget}>
 
@@ -55,13 +70,22 @@ const Form = ({ page, widget, images }: ImageCarouselFormType) => {
 			{modalOpen && <Modal setIsOpen={setModalOpen} head="Select or Upload Media">
 				<MediaLibrary setSelectImage={setSelectImage} action={`/admin/pages/pages/${page.id}/create/upload`} images={images} />
 			</Modal>}
+			<DndContext id="2" sensors={sensors}>
 
-			<Table images={selectedImages} />
+				<Table selectImages={selectImages} setSelectImage={setSelectImage} images={selectedImages} />
+				<DragOverlayWrapper selectedImages={selectedImages} />
+			</DndContext>
 			<ValidatedForm validator={imageCarouselFormValidator} method="post">
 				<FormInput name="imagesIds" type="hidden" value={selectImages ? JSON.stringify(selectImages) : ""} />
 				<FormInput type="hidden" name="id" value={widget.id} />
 				<FormInput type="hidden" name="carouselId" value={carouselId} />
-				<SubmitButton classNames='border-2 w-1/3 border-green-600 rounded-sm hover:bg-green-200 pr-2 pl-2 hover:border-black' >Save</SubmitButton>
+				<div className="inline-flex w-full justify-between">
+					<SubmitButton classNames='border-2 w-1/3 border-green-600 rounded-sm hover:bg-green-200 pr-2 pl-2 hover:border-black' >Save</SubmitButton>
+					<button className="underline text-red-500 " onClick={(e) => deleteWidget(e)}>
+						Delete
+					</button>
+				</div>
+
 			</ValidatedForm>
 		</WidgetFormWrapper>
 	)

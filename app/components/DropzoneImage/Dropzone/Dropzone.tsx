@@ -27,8 +27,8 @@ function CustomDropzone({ action, image }: { image: SerializeFrom<Image | null>,
 					src={image.path.includes("https") ? image.path : `/uploads/${image.path}`}
 					alt={image.path}
 				/>
-			) : <div className="text-center">
-				<p className="flex h-full items-center text-lg text-gray-400">
+			) : <div className="flex h-full p-4 w-full justify-center items-center ">
+				<p className="flex h-full p-4 w-full justify-center items-center text-lg text-gray-400">
 					Drag’n’drop some files here, or click to select files
 				</p>
 

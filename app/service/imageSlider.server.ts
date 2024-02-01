@@ -6,12 +6,14 @@ export const connectImagesToImageCarousel = async (
 		const images = await prisma.image.findMany({
 			where: { id: { in: imageId } },
 		})
+		console.log('🚀 ~ images:', images)
 
 		const imageCarousel = await prisma.imageCarousel.findUnique({
 			where: { id: carouselId },
 		})
+		console.log('🚀 ~ imageCarousel:', imageCarousel)
 
-		if (!images || images.length !== imageId.length || !imageCarousel) {
+		if (!images || !imageCarousel) {
 			throw new Error('One or more posts or the post carousel were not found.')
 		}
 

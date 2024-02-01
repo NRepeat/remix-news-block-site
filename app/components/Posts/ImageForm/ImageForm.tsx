@@ -17,9 +17,9 @@ const ImageForm = ({ id, images, image }: ImageFormParams) => {
 
 		submit({ imageId: data.id, type: "media" }, { method: 'post', action: `/admin/posts/post/${data.postId}/edit`, navigate: false, preventScrollReset: true })
 	}
-	return <div className=" flex  max-w-[300px]">
+	return <div className=" flex w-full ">
 
-		<div aria-hidden className='max-w-[300px]  relative h-[250px] overflow-hidden border-4 border-gray-500 rounded-md border-dotted flex flex-col items-center justify-center' onClick={() => setIsOpen(true)}>
+		<div aria-hidden className='  max-w-[100%] relative h-[250px] overflow-hidden border-4 border-gray-500 rounded-md border-dotted flex flex-col items-center justify-center' onClick={() => setIsOpen(true)}>
 			<CustomDropzone image={image} action={`/admin/posts/post/${id}/create/upload`} />
 		</div>
 		{open && <Modal setIsOpen={setIsOpen} head="Select or Upload Media">

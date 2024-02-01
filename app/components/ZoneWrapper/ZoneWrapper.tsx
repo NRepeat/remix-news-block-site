@@ -48,7 +48,7 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ images, page, dropZone, widg
 
 	return (
 		<div className='w-full mb-1 border-2 rounded-sm  bg-slate-50  
-		 border-gray-300 min-h-12' >
+ border-gray-300 min-h-12' >
 			<button onClick={() => setOpen(prev => !prev)} className='flex w-full justify-between items-center pr-2'>
 
 				<p className='h-12 flex items-center  pl-2'  >{dropZone.name}</p>

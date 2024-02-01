@@ -33,9 +33,8 @@ export const mediaUrlValidator = withZod(z.object({
 })
 );
 const MediaForm = ({ action, type, label }: MediaFormType) => {
-	// const fetcher = useFetcher()
 
-	return (<div className="flex w-full flex-col ">
+	return (<div className="flex w-full flex-col  ">
 		<ValidatedForm className={"flex  w-ful flex-col items-start gap-2  pb-4"} validator={mediaValidator} encType="multipart/form-data" action={action} method="post" navigate={false}>
 			<label htmlFor="file">{label}</label>
 			<FormInput name='file' type='file' />

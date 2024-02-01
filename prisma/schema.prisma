@@ -129,6 +129,7 @@ model Image {
   id                 Int                  @id @default(autoincrement())
   path               String
   order              Int?
+  link               String?              @default("")
   type               String               @default("image")
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt

@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { createImage } from "~/service/image.server";
 import { connectImageToPost } from "~/service/post.server";
 
@@ -19,7 +19,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		const image = await createImage(url)
 		await connectImageToPost(parseInt(id), image.id)
 	}
-	return json({ success: true });
+	return redirect(`/admin/posts/post/${id}/edit`);
 }
 
 

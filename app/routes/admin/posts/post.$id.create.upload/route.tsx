@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { ActionFunctionArgs, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
 import { createImage } from "~/service/image.server";
 import { connectImageToPost } from "~/service/post.server";
 
@@ -21,29 +21,32 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		uploadHandler
 	);
 	const formDataType = formData.get("type") as MediaType
+	console.log("🚀 ~ action ~ formDataType:", formDataType)
 	const id = (params.id)
 	if (formDataType === 'url') {
 		const url = formData.get("url") as string
+		console.log("🚀 ~ action ~ url:", url)
 
 		const image = await createImage(url)
 		await connectImageToPost(parseInt(id), image.id)
+		return redirect(`/admin/posts/post/${id}/edit`)
 	}
 	if (formDataType === "postThumbnail") {
 		const { name } = formData.get("file") as File
 
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return json({ success: true });
+		return redirect(`/admin/posts/post/${id}/edit`)
 	}
 	if (formDataType === "postImage") {
 		const { name } = formData.get("file") as File
 
 		const image = await createImage(name)
 		await connectImageToPost(parseInt(id), image.id)
-		return json({ success: true });
+		return redirect(`/admin/posts/post/${id}/edit`)
 	}
 
-	return json({ success: true });
+	return redirect(`/admin/posts/post/${id}/edit`)
 }
 
 

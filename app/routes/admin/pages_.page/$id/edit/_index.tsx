@@ -6,8 +6,9 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { postCarouselFormValidator } from "~/components/CarouselPostWidget/Form/Form";
 import EditPage from "~/components/EditPage/EditPage";
+import { imageLinkValidator } from "~/components/ImageCarouselWidget/Wrapper/Wrapper";
 import { textValidator } from "~/components/TextWidget/Form/Form";
-import { getAllImages } from "~/service/image.server";
+import { getAllImages, updateImage } from "~/service/image.server";
 import { getPage, updatePage, updatePageContent } from "~/service/page.server";
 import { getAllPosts, getLatestPosts, getPostsByRating } from "~/service/post.server";
 import { connectPostToPostCarousel, createPostCarousel } from "~/service/postSlider.server";
@@ -53,6 +54,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   console.log("🚀 ~ action ~ formData:", formData)
+  if (formData.has("link")) {
+    const validatedData = await imageLinkValidator.validate(formData)
+    if (validatedData.error) {
+      return validationError({
+        fieldErrors: { id: "Not valid data" }
+      })
+    }
+    await updateImage({ id: validatedData.data.id, data: { link: validatedData.data.link } })
+    return json({ success: true })
+  }
   if (formData.has("imagesIds")) {
     await createImageCarouselAction({ formData })
     return json({ success: true })

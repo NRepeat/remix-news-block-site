@@ -79,7 +79,7 @@ const TagForm: FC<TagFormType> = ({ post, tags }) => {
 					</ul>}
 
 				</fetcher.Form>
-				{fetcher.data && fetcher.data.tags.length <= 0 && selectedTag.find(tag => tag.slug !== fetcher.data?.query) &&
+				{fetcher.data && fetcher.data.tags.length <= 0 &&
 					<ValidatedForm
 						className="flex flex-col justify-start gap-1  pb-2  pt-2"
 						validator={tagsFormValidation}

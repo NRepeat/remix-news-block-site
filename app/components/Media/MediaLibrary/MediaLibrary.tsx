@@ -40,7 +40,7 @@ const MediaLibrary: FC<MediaLibraryType> = ({ postId, setSelectImage, images, ac
 
 	const [tabIsOpen, setOpenTab] = useState<boolean>(true)
 	return (
-		<div className="  inline-flex flex-col gap-2  ">
+		<div className="  inline-flex flex-col w-full gap-2  ">
 			<Navigation setOpenTab={setOpenTab} tabIsOpen={tabIsOpen} />
 
 

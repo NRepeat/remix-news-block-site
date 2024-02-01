@@ -48,3 +48,21 @@ export const deleteImage = async ({ id }: { id: number }) => {
 		throw new Error('Error delete image')
 	}
 }
+
+export const updateImage = async ({
+	id,
+	data,
+}: {
+	id: number
+	data: { link?: string }
+}) => {
+	try {
+		const updateImage = await prisma.image.update({
+			where: { id },
+			data: data,
+		})
+		return updateImage
+	} catch (error) {
+		throw new Error('Error delete image')
+	}
+}

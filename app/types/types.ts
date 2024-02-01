@@ -44,7 +44,7 @@ export type Widget = {
 		widget: WidgetInstance
 		posts?: SerializeFrom<PostWithTags[]>
 		images?: SerializeFrom<Image[]>
-		page: SerializeFrom<Page>
+		page?: SerializeFrom<Page>
 	}>
 }
 export type WidgetsType = {

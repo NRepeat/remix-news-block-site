@@ -1,5 +1,7 @@
+import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { Page } from '@prisma/client';
 import { SerializeFrom } from '@remix-run/node';
+import { useSubmit } from '@remix-run/react';
 import { withZod } from '@remix-validated-form/with-zod';
 import React, { FC, useEffect, useState } from 'react';
 import { ValidatedForm } from 'remix-validated-form';
@@ -13,7 +15,7 @@ import { GetAllPostsType, PostWithTags } from '~/service/post.server';
 import { WidgetInstance } from '~/types/types';
 import DndPostWrapper from './DndPostWrapper/DndPostWrapper';
 import DndTableWrapper from './DndTableWrapper/DndTableWrapper';
-
+import DrugOverlay from './DrugOverlay/DrugOverlay';
 type PostCarouselFormType = {
 	widget: WidgetInstance;
 	posts?: SerializeFrom<GetAllPostsType>,
@@ -63,7 +65,17 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts, page }) => {
 		event.preventDefault()
 		setOption(value);
 	};
-
+	const mouseSensor = useSensor(MouseSensor, {
+		activationConstraint: {
+			distance: 20,
+		},
+	});
+	const sensors = useSensors(mouseSensor);
+	const submit = useSubmit()
+	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault()
+		submit({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", navigate: false });
+	};
 	return (
 		<WidgetFormWrapper widget={widget}>
 
@@ -85,9 +97,15 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts, page }) => {
 						</Modal>
 					)}
 					{
-						<DndTableWrapper data={selectedPosts} setSelectedPosts={setSelectedPosts} >
-							{selectedPosts.map(post => <DndPostWrapper key={post.id} post={post} />)}
-						</DndTableWrapper>
+
+						<DndContext id="3" sensors={sensors}>
+							<DndTableWrapper data={selectedPosts} setSelectedPosts={setSelectedPosts} >
+								{selectedPosts.map(post => <DndPostWrapper key={post.id} post={post} />)}
+							</DndTableWrapper>
+
+							<DrugOverlay selectedPosts={selectedPosts} />
+						</DndContext>
+
 					}
 				</div>
 			)}
@@ -100,7 +118,13 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts, page }) => {
 				}
 
 				<FormInput type="hidden" name="type" value={option} />
-				<SubmitButton classNames='border-2 w-1/3 border-green-600 rounded-sm hover:bg-green-200 pr-2 pl-2 hover:border-black' >Save</SubmitButton>
+				<div className="inline-flex w-full justify-between">
+					<SubmitButton classNames='border-2 w-1/3 border-green-600 rounded-sm hover:bg-green-200 pr-2 pl-2 hover:border-black' >Save</SubmitButton>
+					<button className="underline text-red-500 " onClick={(e) => deleteWidget(e)}>
+						Delete
+					</button>
+				</div>
+
 			</ValidatedForm>
 		</WidgetFormWrapper>
 	);
