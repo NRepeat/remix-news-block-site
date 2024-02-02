@@ -8,17 +8,26 @@ type SelectButtonType = {
 	}) => void
 	setSelectImage?: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
 	postId?: number
+	isBaner?: boolean
 }
 
 
 
-const SelectButton: FC<SelectButtonType> = ({ selectedImage, setPostImageHandler, postId, setSelectImage }) => {
+const SelectButton: FC<SelectButtonType> = ({ isBaner, selectedImage, setPostImageHandler, postId, setSelectImage }) => {
+	console.log("🚀 ~  isBaner:", isBaner)
 
 	const handleImageSave = ({ selectedImage, postId }: { selectedImage: number, postId: number }) => {
-		if (setSelectImage)
-			return setSelectImage(prev => [selectedImage, ...prev])
+		if (setSelectImage) {
+			if (isBaner) {
+
+				return setSelectImage([selectedImage]);
+			} else {
+				return setSelectImage((prev) => [selectedImage, ...prev]);
+			}
+		}
+
 		if (setPostImageHandler) {
-			return setPostImageHandler({ id: selectedImage, postId })
+			return setPostImageHandler({ id: selectedImage, postId });
 		}
 	}
 	return (

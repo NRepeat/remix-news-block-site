@@ -8,6 +8,7 @@ export type WidgetType =
 	| 'TextWidget'
 	| 'CarouselPostWidget'
 	| 'CarouselImageWidget'
+	| 'Baner'
 export type WidgetDataType = {
 	text?: string
 	title?: string

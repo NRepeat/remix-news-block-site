@@ -68,15 +68,26 @@ export const removeElement = async ({
 	slug: string
 }) => {
 	try {
-		const content = await getPageContent({ slug })
-		if (!content) throw new Error('not found')
+		const pageContent = await getPageContent({ slug })
+		if (!pageContent) throw new Error('not found')
 
-		let parsedContent = JSON.parse(content.content) as WidgetInstance[]
-		parsedContent = parsedContent.filter(el => el.id !== id)
-
-		await prisma.page.update({
+		const parsedPageContent = JSON.parse(pageContent.content)
+		if (Array.isArray(parsedPageContent)) {
+			const trueParsedPageContent: WidgetInstance[] = parsedPageContent.map(c =>
+				typeof c === 'string' ? JSON.parse(c) : c
+			)
+			return await prisma.page.update({
+				where: { slug },
+				data: {
+					content: JSON.stringify(
+						trueParsedPageContent.filter(c => c.id !== id)
+					),
+				},
+			})
+		}
+		return await prisma.page.update({
 			where: { slug },
-			data: { content: JSON.stringify(parsedContent) },
+			data: { content: '' },
 		})
 	} catch (error) {
 		console.log('🚀 ~ removeElement ~ error:', error)

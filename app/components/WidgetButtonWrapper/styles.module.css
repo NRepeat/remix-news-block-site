@@ -10,6 +10,7 @@
 	border-radius: 2px;
 	font-size: 1rem;
 	transition: all 100ms;
+	width: 100%;
 }
 
 .modalButton:hover {

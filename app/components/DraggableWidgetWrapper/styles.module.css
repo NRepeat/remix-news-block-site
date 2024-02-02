@@ -1,6 +1,8 @@
 .wrapper {
 	transition: all 0.1s;
 	position: relative;
+	border-radius: 2px;
+
 }
 
 

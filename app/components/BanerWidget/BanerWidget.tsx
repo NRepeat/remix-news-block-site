@@ -2,23 +2,23 @@ import { Widget, WidgetType } from "~/types/types";
 import Form from "./Form/Form";
 
 const additionalData = {
-	label: 'Post Carousel Widget',
+	label: 'Baner Widget',
 	required: false,
-	placeHolder: 'Post Carousel ',
+	placeHolder: 'Baner ',
 	content: '',
 };
-const type: WidgetType = "CarouselImageWidget"
-const carouselImageWidget: Widget = {
+const type: WidgetType = "Baner"
+const banerWidget: Widget = {
 	type,
-	name: "image Carousel",
+	name: "Baner",
 	construct: ({ id, containerId }) => ({
 		id,
 		containerId,
 		type,
 		additionalData
 	}),
-	button: { name: "Image Carousel" },
+	button: { name: "Baner " },
 	widget: Form,
 }
 
-export default carouselImageWidget
+export default banerWidget

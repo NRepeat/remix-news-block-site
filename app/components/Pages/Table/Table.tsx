@@ -10,9 +10,9 @@ type PagesTableType = {
 
 const Table: FC<PagesTableType> = ({ pages }) => {
 	const navigate = useNavigate()
-	const handleRowClick = (pageId: number) => {
+	const handleRowClick = (slug: string) => {
 
-		navigate(`/admin/pages/page/${pageId}/edit`);
+		navigate(`/admin/pages/page/${slug}/edit`);
 	}
 	return (
 		<table className='table-fixed  p-4  w-full  '   >
@@ -27,7 +27,7 @@ const Table: FC<PagesTableType> = ({ pages }) => {
 			</thead>
 			<tbody className='odd:bg-slate-300  w-full'>
 				{pages && pages.map((page) => (
-					<tr className='even:bg-slate-300    cursor-pointer hover:text-white hover:bg-sky-800' key={page.id} onClick={() => handleRowClick(page.id)}>
+					<tr className='even:bg-slate-300    cursor-pointer hover:text-white hover:bg-sky-800' key={page.id} onClick={() => handleRowClick(page.slug)}>
 
 						<td className='w-12 pt-4 pb-4 text-center'>{page.id}</td>
 						<td className='pl-4' >{page.name} </td>

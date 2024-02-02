@@ -5,7 +5,7 @@ import { FC, useState } from "react"
 import MediaForm from "~/components/DropzoneImage/DropzoneImage"
 import usePagination from "~/hooks/usePagination"
 import { loader as mediaRouteLoader } from "~/routes/admin/media/route"
-import { loader as postRouteLoader } from "~/routes/admin/pages_.page/$id/edit/_index"
+import { loader as postRouteLoader } from "~/routes/admin/pages_.page/$page/edit/_index"
 import { loader } from "~/routes/admin/posts_.post/$id.edit/route"
 import ImageGrid from "./ImageGrid/ImageGrid"
 import Navigation from "./Navigation/Navigation"
@@ -15,6 +15,7 @@ import SelectedImage from "./SelectedImage/SelectedImage"
 
 type MediaLibraryType = {
 	images?: SerializeFrom<Image[]>
+	isBaner: boolean
 	action: string
 	setPostImageHandler?: (data: {
 		id: number;
@@ -23,7 +24,7 @@ type MediaLibraryType = {
 	postId?: number
 	setSelectImage?: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
 }
-const MediaLibrary: FC<MediaLibraryType> = ({ postId, setSelectImage, images, action, setPostImageHandler }) => {
+const MediaLibrary: FC<MediaLibraryType> = ({ isBaner, postId, setSelectImage, images, action, setPostImageHandler }) => {
 	const mediaRoutData = useRouteLoaderData<typeof mediaRouteLoader>("routes/admin/media/route");
 	const postEditRoute = useRouteLoaderData<typeof loader>('routes/admin/posts_.post/$id.edit/route');
 	const pageEditRoute = useRouteLoaderData<typeof postRouteLoader>('routes/admin/pages_.page/$id/edit/_index');
@@ -53,7 +54,7 @@ const MediaLibrary: FC<MediaLibraryType> = ({ postId, setSelectImage, images, ac
 						</>
 						}
 						{setSelectImage && <>
-							{tabIsOpen && selectedImage && <SelectButton postId={postId} selectedImage={selectedImage} setSelectImage={setSelectImage} />}
+							{tabIsOpen && selectedImage && <SelectButton isBaner={isBaner} postId={postId} selectedImage={selectedImage} setSelectImage={setSelectImage} />}
 						</>
 						}
 					</div>

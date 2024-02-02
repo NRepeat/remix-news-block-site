@@ -1,66 +1,46 @@
-import { DndContext, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { Image, Page } from "@prisma/client";
 import { SerializeFrom } from "@remix-run/node";
 import { useSubmit } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ValidatedForm } from "remix-validated-form";
 import { z } from "zod";
+import Table from "~/components/ImageCarouselWidget/Table/Table";
 import MediaLibrary from "~/components/Media/MediaLibrary/MediaLibrary";
 import Modal from "~/components/Modal/Modal";
 import { SubmitButton } from "~/components/UI/SubmitButton/SubmitButton";
 import FormInput from "~/components/UI/ValidatedFormInput/ValidatedFormInput";
 import WidgetFormWrapper from "~/components/WidgetFormWrapper/WidgetFormWrapper";
 import { WidgetInstance } from "~/types/types";
-import DragOverlayWrapper from "../DragOverlayWrapper/DragOverlayWrapper";
-import Table from "../Table/Table";
-
-type ImageCarouselFormType = {
+type BanerFormType = {
 	widget: WidgetInstance;
 	images?: SerializeFrom<Image[]>,
 	page?: SerializeFrom<Page>
-
 };
-export const imageCarouselFormValidator = withZod(z.object({
-	imagesIds: z.coerce.string().optional(),
-	id: z.coerce.string(),
-	carouselId: z.coerce.number().optional()
-}))
-
-
-const Form = ({ page, widget, images }: ImageCarouselFormType) => {
+const Form: FC<BanerFormType> = ({ widget, page, images }) => {
+	const submit = useSubmit()
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const [selectImages, setSelectImage] = useState<(number | undefined)[]>([])
-	const [carouselId, setCarouselId] = useState<string>()
-
-
+	const [banerId, setBanerId] = useState<string>()
 	useEffect(() => {
 		if (page) {
 			const content = JSON.parse(page.content) as WidgetInstance[];
 			const widgetsInstanceContent = content.find(w => w.id === widget.id)?.additionalData?.content as string;
 
 			if (widgetsInstanceContent) {
-				const { imagesIds, existCarouselId } = JSON.parse(widgetsInstanceContent) as { imagesIds: string, existCarouselId: string };
-				const parsedPostsIds = typeof imagesIds === "string" ? JSON.parse(imagesIds) as number[] : imagesIds;
-				const filteredPosts = parsedPostsIds.map(id => images?.find(image => image.id === id)).filter(post => post !== undefined)
-				setCarouselId(existCarouselId)
-				setSelectImage(filteredPosts.map(img => img?.id));
+				const { banerId, imageId } = JSON.parse(widgetsInstanceContent) as { banerId: string, imageId: string };
+				const parsedPostsIds = typeof imageId === "string" ? JSON.parse(imageId) as number : imageId;
+				const filteredPosts = images?.find(image => image.id === parsedPostsIds)
+				setBanerId(banerId)
+				setSelectImage([filteredPosts?.id]);
 			}
 		}
 	}, [images, page, widget.id]);
-	const mouseSensor = useSensor(MouseSensor, {
-		activationConstraint: {
-			distance: 20,
-		},
-	});
-	const sensors = useSensors(mouseSensor);
-	const selectedImages = selectImages.map(id => images?.find(image => image.id === id)).filter(post => post !== undefined)
-	const submit = useSubmit()
 	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault()
-		submit({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", navigate: false });
+		submit({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", action: `/admin/pages/page/${page?.slug}/edit` });
 	};
-
+	const selectedImages = selectImages.map(id => images?.find(image => image.id === id)).filter(post => post !== undefined)
 	return (
 		<WidgetFormWrapper widget={widget}>
 
@@ -68,28 +48,29 @@ const Form = ({ page, widget, images }: ImageCarouselFormType) => {
 				<p className='w-full text-center'>Add image</p>
 			</button>
 			{modalOpen && <Modal setIsOpen={setModalOpen} head="Select or Upload Media">
-				<MediaLibrary setSelectImage={setSelectImage} isBaner={false} action={`/admin/pages/pages/${page?.id}/create/upload`} images={images} />
+				<MediaLibrary isBaner={true} setSelectImage={setSelectImage} action={`/admin/pages/pages/${page?.id}/create/upload`} images={images} />
 			</Modal>}
-			<DndContext id="2" sensors={sensors}>
-
-				<Table selectImages={selectImages} setSelectImage={setSelectImage} images={selectedImages} />
-				<DragOverlayWrapper selectedImages={selectedImages} />
-			</DndContext>
-			<ValidatedForm validator={imageCarouselFormValidator} method="post">
-				<FormInput name="imagesIds" type="hidden" value={selectImages ? JSON.stringify(selectImages) : ""} />
+			<Table selectImages={selectImages} banerId={banerId} isBaner={true} setSelectImage={setSelectImage} images={selectedImages} />
+			<ValidatedForm className="" validator={banerValidator} method="post" >
+				<FormInput name="imageId" value={selectImages[0] ?? ''} type="hidden" />
+				<FormInput name="banerId" value={banerId} type="hidden" />
 				<FormInput type="hidden" name="id" value={widget.id} />
-				<FormInput type="hidden" name="carouselId" value={carouselId} />
+				<FormInput type="hidden" name="isBaner" value={"true"} />
 				<div className="inline-flex w-full justify-between">
 					<SubmitButton classNames='border-2 w-1/3 border-green-600 rounded-sm hover:bg-green-200 pr-2 pl-2 hover:border-black' >Save</SubmitButton>
 					<button className="underline text-red-500 " onClick={(e) => deleteWidget(e)}>
 						Delete
 					</button>
 				</div>
-
 			</ValidatedForm>
 		</WidgetFormWrapper>
 	)
 }
 
 export default Form
-
+export const banerValidator = withZod(z.object({
+	id: z.string(),
+	isBaner: z.string().default("true"),
+	imageId: z.coerce.number(),
+	banerId: z.coerce.number().optional(),
+}))

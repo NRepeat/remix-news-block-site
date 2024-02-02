@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react';
 import { randomId } from '~/utils/randomId';
 import { DndWrapper } from '../Wrapper/Wrapper';
 
-const Table = ({ images, setSelectImage, selectImages }: {
+const Table = ({ images, setSelectImage, isBaner, banerId, selectImages }: {
 	images: (SerializeFrom<Image> | undefined)[]
 	setSelectImage: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
 	selectImages: (number | undefined)[]
+	isBaner?: boolean
+	banerId?: string
 }) => {
 	const { setNodeRef } = useDroppable({
 		id: 'post-edit-widget' + randomId(),
@@ -58,7 +60,7 @@ const Table = ({ images, setSelectImage, selectImages }: {
 		<div className='flex flex-col gap-4 p-4' ref={setNodeRef}>
 			{images && images.map((image, i) => {
 				const src = image?.path.includes('/') ? image.path : `/uploads/${image?.path}`;
-				return (<DndWrapper key={i} setSelectImage={setSelectImage} image={image} src={src} />)
+				return (<DndWrapper key={i} banerId={banerId} isBaner={isBaner} setSelectImage={setSelectImage} image={image} src={src} />)
 
 			})}
 		</div>

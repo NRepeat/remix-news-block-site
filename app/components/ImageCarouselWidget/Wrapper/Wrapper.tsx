@@ -10,13 +10,14 @@ import Modal from "~/components/Modal/Modal";
 import { SubmitButton } from "~/components/UI/SubmitButton/SubmitButton";
 import FormInput from "~/components/UI/ValidatedFormInput/ValidatedFormInput";
 import styles from "./styles.module.css";
-export const DndWrapper = ({ image, src, setSelectImage }: {
+export const DndWrapper = ({ image, src, isBaner, banerId, setSelectImage }: {
 
 	image: SerializeFrom<Image> | undefined,
 	src: string
+	banerId?: string
+	isBaner?: boolean
 	setSelectImage: React.Dispatch<React.SetStateAction<(number | undefined)[]>>
 }) => {
-	console.log("🚀 ~ image:", image)
 	if (!image) throw new Error("not found")
 	const { setNodeRef: setDraggableNodeRef, attributes, listeners } = useDraggable({
 		id: image.id + 'image-edit-widget',
@@ -71,8 +72,10 @@ export const DndWrapper = ({ image, src, setSelectImage }: {
 					<img className='w-full object-cover h-full' src={src} alt={image?.path} />
 					<ValidatedForm className="flex w-full justify-start h-lg flex-col rounded-sm gap-4  border-2 p-8 border-slate-400" defaultValues={{ link: image.link ?? "" }} validator={imageLinkValidator} method="post" >
 						<p className="font-bold text-xl">Edit link</p>
+						<FormInput name="isBaner" type="hidden" value={`${isBaner && "false"}`} />
 						<FormInput name="link" placeholder="Link" type="text" />
 						<FormInput name="id" value={image.id} type="hidden" />
+						<FormInput name="banerId" value={banerId} type="hidden" />
 						<SubmitButton classNames="border-2 rounded-sm border-blue-400 p-4 hover:bg-blue-200">Save</SubmitButton>
 					</ValidatedForm>
 
@@ -85,7 +88,8 @@ export const DndWrapper = ({ image, src, setSelectImage }: {
 	)
 }
 export const imageLinkValidator = withZod(z.object({
-	link: z.string(),
-	id: z.coerce.number()
-
+	link: z.string().optional(),
+	id: z.coerce.number(),
+	banerId: z.coerce.number().optional(),
+	isBaner: z.string().optional().default("false")
 }))

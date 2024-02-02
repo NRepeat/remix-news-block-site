@@ -1,3 +1,4 @@
+import { WidgetInstance } from '~/types/types'
 import { prisma } from '~/utils/prisma.server'
 
 export const createPage = async ({
@@ -79,14 +80,13 @@ export const updatePageContent = async ({
 }) => {
 	try {
 		const prevContent = await getPageContent({ slug })
-		const parsedContent = JSON.parse(content)
+		const parsedContent = JSON.parse(content) as WidgetInstance
 		const newContent = []
 		if (prevContent?.content === '' || prevContent?.content === 'undefined') {
 			newContent.push(parsedContent)
 		}
 		if (prevContent?.content) {
 			const parsedArray = JSON.parse(prevContent.content) as Array<[]>
-			console.log('🚀 ~ parsedArray :', parsedArray)
 
 			newContent.push(
 				...parsedArray.map(item =>
@@ -102,7 +102,11 @@ export const updatePageContent = async ({
 				newContent.splice(existingIndex, 1)
 			}
 
-			newContent.splice(index, 0, JSON.parse(content))
+			newContent.splice(
+				index,
+				0,
+				typeof content === 'string' ? JSON.parse(content) : content
+			)
 		}
 		console.log('🚀 ~ newContent:', newContent)
 		const pageContent = await prisma.page.update({

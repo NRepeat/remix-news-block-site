@@ -19,7 +19,7 @@ import DrugOverlay from './DrugOverlay/DrugOverlay';
 type PostCarouselFormType = {
 	widget: WidgetInstance;
 	posts?: SerializeFrom<GetAllPostsType>,
-	page: SerializeFrom<Page>
+	page?: SerializeFrom<Page>
 };
 
 export const postCarouselFormValidator = withZod(z.object({
@@ -32,7 +32,7 @@ export const postCarouselFormValidator = withZod(z.object({
 }))
 
 const Form: FC<PostCarouselFormType> = ({ widget, posts, page }) => {
-
+	const submit = useSubmit()
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const [option, setOption] = useState<string>('latest');
 	const [selectedPosts, setSelectedPosts] = useState<SerializeFrom<GetAllPostsType>>([]);
@@ -71,7 +71,7 @@ const Form: FC<PostCarouselFormType> = ({ widget, posts, page }) => {
 		},
 	});
 	const sensors = useSensors(mouseSensor);
-	const submit = useSubmit()
+
 	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault()
 		submit({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", navigate: false });

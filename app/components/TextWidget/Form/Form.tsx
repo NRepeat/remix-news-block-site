@@ -53,8 +53,8 @@ const Form: FC<TextFormType> = ({ widget }) => {
 
 
 	const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		e.preventDefault()
-		sub({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete", navigate: false });
+		e.stopPropagation()
+		sub({ containerId: widget.containerId, widgetId: widget.id, type: "delete" }, { method: "delete" });
 	};
 
 	const handleTitleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {

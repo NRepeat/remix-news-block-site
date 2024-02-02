@@ -83,11 +83,11 @@ model Baner {
   id        Int      @id @default(autoincrement())
   link      String?
   order     Int?
-  type      String   @default("baner")
-  image     Image    @relation(fields: [imageId], references: [id])
+  type      String?  @default("baner")
+  image     Image?   @relation(fields: [imageId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  imageId   Int
+  imageId   Int?
   Page      Page?    @relation(fields: [pageId], references: [id])
   pageId    Int?
 }

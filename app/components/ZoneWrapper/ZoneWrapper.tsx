@@ -56,8 +56,9 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({ images, page, dropZone, widg
 			</button>
 			{open &&
 				<DndContext sensors={sensors}>
-					<div ref={setNodeRef}>
-						{widgetsData && <WidgetWrapper page={page} images={images} posts={posts} widgetsData={widgetsData} />}
+
+					<div className='p-4 bg-slate-300' ref={setNodeRef}>
+						{widgetsData && <WidgetWrapper dropZone={dropZone} page={page} images={images} posts={posts} widgetsData={widgetsData} />}
 						{widgetsData?.length === 0 && <div className='w-full min-h-12 bg-gray-200 flex items-center pl-4 '>No widgets added eat </div>}
 
 					</div>

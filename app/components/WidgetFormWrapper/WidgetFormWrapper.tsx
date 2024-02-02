@@ -12,12 +12,13 @@ type WidgetFormWrapperType = {
 
 
 const WidgetFormWrapper: FC<WidgetFormWrapperType> = ({ children, widget, }) => {
+	console.log("🚀 ~  widget:", widget.additionalData?.placeHolder)
 
 	const [open, setOpen] = useState<boolean>()
 	return (
 		<div className={styles.container}>
 			<button className={styles.button} onClick={() => setOpen((prev) => !prev)}>
-				<p>{widget.type} {widget.id}</p>
+				<p>{widget.additionalData?.placeHolder} </p>
 				<MdArrowDropDown />
 			</button>
 			{open && (
