@@ -1,42 +1,42 @@
 .container {
-	min-height: 3rem;
-	padding-top: 0.5rem;
+  min-height: 3rem;
+  padding-top: 0.5rem;
 }
 
 .button {
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
-	display: inline-flex;
-	align-items: center;
-	width: 100%;
-	height: 3rem;
-	padding-left: 0.5rem;
-	padding-right: 1rem;
-	justify-content: space-between;
-	background-color: rgb(231, 234, 240);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+  justify-content: space-between;
+  background-color: rgb(231, 234, 240);
 }
 
 .form {
-	display: flex;
-	gap: 1rem;
-	flex-direction: column;
-	border-top: 1px solid gainsboro;
-	padding: 1rem;
-	background-color: white;
-	border-bottom: 1px solid gainsboro;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  border-top: 1px solid gainsboro;
+  padding: 1rem;
+  background-color: white;
+  border-bottom: 1px solid gainsboro;
 }
 
 .deleteButton {
-	color: red;
-	font-size: 0.9rem;
-	text-decoration: underline;
+  color: red;
+  font-size: 0.9rem;
+  text-decoration: underline;
 }
 
 .saveButton {
-	padding: 1rem;
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
-	background-color: blue;
-	color: white;
-	border-radius: 2px;
+  padding: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: blue;
+  color: white;
+  border-radius: 2px;
 }

@@ -1,106 +1,108 @@
-import { Tag } from '@prisma/client'
+import {Tag} from '@prisma/client';
 
-export const createTags = async ({ tags }: { tags: string[] }) => {
-	try {
-		// Use Prisma's createMany to insert multiple records at once
-		await prisma.tag.createMany({
-			data: tags.map(tag => ({ name: tag, slug: tag })),
-			skipDuplicates: true,
-		})
-		const createdTags = await prisma.tag.findMany({
-			where: {
-				slug: {
-					in: tags,
-				},
-			},
-		})
-		return createdTags
-	} catch (error) {
-		console.log('Error creating tags:', error)
-		throw new Error('Failed to create tags')
-	}
-}
+export const createTags = async ({tags}: {tags: string[]}) => {
+  try {
+    const existingTags = await prisma.tag.findMany({
+      where: {
+        slug: {
+          in: tags,
+        },
+      },
+    });
 
-export const searchTags = async ({ search }: { search: string | null }) => {
-	try {
-		let tags
-		if (!search) {
-			tags = await prisma.tag.findMany()
-			return tags
-		}
-		tags = await prisma.tag.findMany({
-			where: { slug: { startsWith: search.toLowerCase() } },
-		})
-		return tags
-	} catch (error) {
-		throw new Error('Failed to search tags')
-	}
-}
-// export const updateTags = async (params: type) => {
-// 	try {
-// 	} catch (error) {
-// 		console.error('Error updating tags:', error)
-// 		throw new Error('Failed to update tags')
-// 	}
-// }
+    const uniqueTags = tags.filter(
+      tag => !existingTags.some(existingTag => existingTag.slug === tag)
+    );
+
+    await prisma.tag.createMany({
+      data: uniqueTags.map(tag => ({name: tag, slug: tag})),
+    });
+
+    const createdTags = await prisma.tag.findMany({
+      where: {
+        slug: {
+          in: uniqueTags,
+        },
+      },
+    });
+
+    return createdTags;
+  } catch (error) {
+    throw new Error('Failed to create tags');
+  }
+};
+
+export const searchTags = async ({search}: {search: string | null}) => {
+  try {
+    let tags;
+    if (!search) {
+      tags = await prisma.tag.findMany();
+      return tags;
+    }
+    tags = await prisma.tag.findMany({
+      where: {slug: {startsWith: search.toLowerCase()}},
+    });
+    return tags;
+  } catch (error) {
+    throw new Error('Failed to search tags');
+  }
+};
 
 export const getAllTags = async () => {
-	try {
-		const tags = await prisma.tag.findMany()
-		return tags
-	} catch (error) {
-		console.error('Error getting tags:', error)
-		throw new Error('Failed to get tags')
-	}
-}
+  try {
+    const tags = await prisma.tag.findMany();
+    return tags;
+  } catch (error) {
+    throw new Error('Failed to get tags');
+  }
+};
 export const deleteTag = async (id: number) => {
-	try {
-		const deletedTag = prisma.tag.delete({
-			where: { id },
-		})
-		return deletedTag
-	} catch (error) {
-		throw new Error('Failed to delete tags')
-	}
-}
-// export const getPostTags = async (params: type) => {
-// 	try {
-// 		const tags = await prisma.tag.findMany({
-// 			where: {},
-// 		})
-// 	} catch (error) {
-// 		console.error('Error getting post tags:', error)
-// 		throw new Error('Failed to get post tags')
-// 	}
-// }
+  try {
+    const deletedTag = prisma.tag.delete({
+      where: {id},
+    });
+    return deletedTag;
+  } catch (error) {
+    throw new Error('Failed to delete tags');
+  }
+};
 
 export const connectTagsToPost = async ({
-	postId,
-	tags,
+  postId,
+  tags,
 }: {
-	postId: number
-	tags: Tag[]
+  postId: number;
+  tags: Tag[];
 }) => {
-	try {
-		const post = await prisma.post.findUnique({ where: { id: postId } })
+  try {
+    const post = await prisma.post.findUnique({where: {id: postId}});
 
-		if (!post) {
-			throw new Error(`Post with id ${postId} not found.`)
-		}
+    if (!post) {
+      throw new Error(`Post with id ${postId} not found.`);
+    }
 
-		const connectTags = await prisma.tag.findMany({
-			where: { id: { in: tags.map(tag => tag.id) } },
-		})
+    const connectTags = await prisma.tag.findMany({
+      where: {id: {in: tags.map(tag => tag.id)}},
+    });
 
-		await prisma.tagPost.createMany({
-			data: connectTags.map(tag => ({
-				postId,
-				tagId: tag.id,
-			})),
-			skipDuplicates: true,
-		})
-	} catch (error) {
-		console.error('Error connecting tags to post:', error)
-		throw new Error('Failed to connect tags to post')
-	}
-}
+    await prisma.tagPost.createMany({
+      data: connectTags.map(tag => ({
+        postId,
+        tagId: tag.id,
+      })),
+      skipDuplicates: true,
+    });
+  } catch (error) {
+    throw new Error('Failed to connect tags to post');
+  }
+};
+
+export const disconnectTagsToPost = async ({id}: {id: number}) => {
+  try {
+    await prisma.tagPost.delete({
+      where: {id},
+    });
+  } catch (error) {
+    throw new Error('Error disconnect tag');
+  }
+};

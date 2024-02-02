@@ -1,29 +1,11 @@
-
-import { redirect } from "@remix-run/node";
-import { createPost } from "~/service/post.server";
-
+import {redirect} from '@remix-run/node';
+import {createPost} from '~/service/post.server';
 
 export async function action() {
-	try {
-		const createdPost = await createPost()
-		return redirect(`/admin/posts/post/${createdPost.id}/edit`)
-	} catch (error) {
-		console.log("🚀 ~ loader ~ error:", error)
-		throw new Error("")
-	}
+  try {
+    const createdPost = await createPost();
+    return redirect(`/admin/posts/post/${createdPost.id}/edit`);
+  } catch (error) {
+    throw new Response('Bad request');
+  }
 }
-
-// export async function loader({ request, params }: LoaderFunctionArgs) {
-// 	try {
-// 		// if (postId) {
-// 		// 	const createdPost = await getPostById(parseInt(postId))
-// 		// 	return json({ createdPost })
-// 		// }
-// 		return {}
-// 	} catch (error) {
-// 		console.log("🚀 ~ loader ~ error:", error)
-// 		throw new Error("")
-// 	}
-// }
-
-

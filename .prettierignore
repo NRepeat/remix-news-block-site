@@ -1,0 +1,8 @@
+.cashe
+.vscode
+build/
+node_modules
+yarn.lock
+package-lock.json
+public/
+remix.config.js

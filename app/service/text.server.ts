@@ -1,46 +1,88 @@
-import { prisma } from '~/utils/prisma.server'
+import {prisma} from '~/utils/prisma.server';
 
 export const createText = async ({
-	slug,
-	title,
-	order,
+  slug,
+  title,
+  article,
 }: {
-	slug: string
-	title: string
-	order?: number
+  slug: string;
+  title: string;
+  article: string;
 }) => {
-	try {
-		const page = await prisma.page.findUnique({
-			where: { slug },
-		})
+  try {
+    const page = await prisma.page.findUnique({
+      where: {slug},
+    });
 
-		if (!page) {
-			throw new Error('Page not found')
-		}
+    if (!page) {
+      const newText = await prisma.text.create({
+        data: {
+          title,
+          article,
+        },
+      });
+      return newText;
+    }
 
-		const isOrderUnique = await prisma.text.findFirst({
-			where: {
-				order,
-				pageId: page.id,
-			},
-		})
+    const newText = await prisma.text.create({
+      data: {
+        title,
+        Page: {
+          connect: {id: page?.id},
+        },
+      },
+    });
 
-		if (isOrderUnique) {
-			throw new Error('Order value is not unique for this page')
-		}
+    return newText;
+  } catch (error) {
+    throw new Error('Error create text');
+  }
+};
 
-		const newText = await prisma.text.create({
-			data: {
-				title,
-				order,
-				Page: {
-					connect: { id: page.id },
-				},
-			},
-		})
+export const getAllTexts = async () => {
+  try {
+    const allTexts = await prisma.text.findMany();
+    return allTexts;
+  } catch (error) {
+    throw new Error('Error fetching all texts');
+  }
+};
+export const getTextById = async (id: number) => {
+  try {
+    const text = await prisma.text.findUnique({
+      where: {id},
+    });
+    if (!text) throw new Error('Text not found');
+    return text;
+  } catch (error) {
+    throw new Error('Error fetching all texts');
+  }
+};
 
-		return newText
-	} catch (error) {
-		throw new Error('Bad request')
-	}
-}
+export const updateText = async (
+  id: number,
+  data: {article: string; title: string}
+) => {
+  try {
+    const text = await prisma.text.update({
+      where: {id},
+      data,
+    });
+    if (!text) throw new Error('Text not found');
+    return text;
+  } catch (error) {
+    throw new Error('Error update text');
+  }
+};
+
+export const deleteText = async (id: number) => {
+  try {
+    const text = await prisma.text.delete({
+      where: {id},
+    });
+    if (!text) throw new Error('Text not found');
+    return text;
+  } catch (error) {
+    throw new Error('Error delete text');
+  }
+};

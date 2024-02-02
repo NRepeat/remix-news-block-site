@@ -1,21 +1,21 @@
 .container {
-	display: inline-flex;
-	flex-direction: column;
-	gap: 5px;
-	width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
 }
 
 .label {
-	text-align: left;
+  text-align: left;
 }
 
 .error {
-	padding-top: 5px;
-	padding-bottom: 5px;
-	text-wrap: wrap;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-wrap: wrap;
 }
 
 .input {
-	display: inline-flex;
-	flex-direction: column;
+  display: inline-flex;
+  flex-direction: column;
 }

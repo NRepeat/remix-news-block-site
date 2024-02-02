@@ -1,24 +1,24 @@
-import { Widget, WidgetType } from "~/types/types";
-import Form from "./Form/Form";
+import {Widget, WidgetType} from '~/types/types';
+import Form from './Form/Form';
 
 const additionalData = {
-	label: 'Post Carousel Widget',
-	required: false,
-	placeHolder: 'Post Carousel ',
-	content: '',
+  label: 'Image Carousel Widget',
+  required: false,
+  placeHolder: 'Image Carousel ',
+  content: '',
 };
-const type: WidgetType = "CarouselImageWidget"
+const type: WidgetType = 'CarouselImageWidget';
 const carouselImageWidget: Widget = {
-	type,
-	name: "image Carousel",
-	construct: ({ id, containerId }) => ({
-		id,
-		containerId,
-		type,
-		additionalData
-	}),
-	button: { name: "Image Carousel" },
-	widget: Form,
-}
+  type,
+  name: 'image Carousel',
+  construct: ({id, containerId}) => ({
+    id,
+    containerId,
+    type,
+    additionalData,
+  }),
+  button: {name: 'Image Carousel'},
+  widget: Form,
+};
 
-export default carouselImageWidget
+export default carouselImageWidget;
