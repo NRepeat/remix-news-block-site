@@ -1,22 +1,15 @@
-import { Tag } from '@prisma/client'
-import { SerializeFrom } from '@remix-run/node'
-import React, { FC } from 'react'
-import { ValidatedForm } from 'remix-validated-form'
-
+import {Tag} from '@prisma/client';
+import {SerializeFrom} from '@remix-run/node';
+import React, {FC} from 'react';
 
 type TagsEditType = {
-	tag: SerializeFrom<Tag>
-	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-	isOpen: boolean
-}
+  tag: SerializeFrom<Tag>;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpen: boolean;
+};
 
-const TagsEdit: FC<TagsEditType> = ({ tag }) => {
-	return (
-		<ValidatedForm>
+const TagsEdit: FC<TagsEditType> = () => {
+  return <div></div>;
+};
 
-
-		</ValidatedForm>
-	)
-}
-
-export default TagsEdit
+export default TagsEdit;

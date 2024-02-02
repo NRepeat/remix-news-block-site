@@ -66,7 +66,6 @@ export const getPostCarouselById = async (sliderId: number) => {
                 image: true,
                 description: true,
                 rating: true,
-                order: true,
                 slug: true,
                 thumbnail: true,
                 title: true,

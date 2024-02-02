@@ -1,12 +1,12 @@
-import { Text } from '@prisma/client';
-import { SerializeFrom } from '@remix-run/node';
-import { Link, useNavigate } from '@remix-run/react';
-import { withZod } from '@remix-validated-form/with-zod';
-import { RiFileEditFill } from 'react-icons/ri';
-import { ValidatedForm } from 'remix-validated-form';
-import { z } from 'zod';
+import {Text} from '@prisma/client';
+import {SerializeFrom} from '@remix-run/node';
+import {Link, useNavigate} from '@remix-run/react';
+import {withZod} from '@remix-validated-form/with-zod';
+import {RiFileEditFill} from 'react-icons/ri';
+import {ValidatedForm} from 'remix-validated-form';
+import {z} from 'zod';
 import DeleteButton from '~/components/Posts/Buttons/DeleteButton';
-import { SubmitButton } from '~/components/UI/SubmitButton/SubmitButton';
+import {SubmitButton} from '~/components/UI/SubmitButton/SubmitButton';
 import FormInput from '~/components/UI/ValidatedFormInput/ValidatedFormInput';
 
 const searchTextValidator = withZod(
@@ -15,7 +15,7 @@ const searchTextValidator = withZod(
   })
 );
 
-const Table = ({ texts }: { texts: SerializeFrom<Text[]> }) => {
+const Table = ({texts}: {texts: SerializeFrom<Text[]>}) => {
   const navigate = useNavigate();
   const handleRowClick = (id: number) => {
     navigate(`/admin/texts/text/${id}/edit`);
@@ -81,7 +81,6 @@ const Table = ({ texts }: { texts: SerializeFrom<Text[]> }) => {
         </tbody>
       </table>
     </div>
-
   );
 };
 

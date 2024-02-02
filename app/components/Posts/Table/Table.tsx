@@ -1,12 +1,12 @@
-import { SerializeFrom } from '@remix-run/node';
-import { useNavigate } from '@remix-run/react';
-import { withZod } from '@remix-validated-form/with-zod';
-import React, { FC, useState } from 'react';
-import { ValidatedForm } from 'remix-validated-form';
-import { z } from 'zod';
-import { SubmitButton } from '~/components/UI/SubmitButton/SubmitButton';
+import {SerializeFrom} from '@remix-run/node';
+import {useNavigate} from '@remix-run/react';
+import {withZod} from '@remix-validated-form/with-zod';
+import React, {FC, useState} from 'react';
+import {ValidatedForm} from 'remix-validated-form';
+import {z} from 'zod';
+import {SubmitButton} from '~/components/UI/SubmitButton/SubmitButton';
 import FormInput from '~/components/UI/ValidatedFormInput/ValidatedFormInput';
-import { GetAllPostsType, PostWithTags } from '~/service/post.server';
+import {GetAllPostsType, PostWithTags} from '~/service/post.server';
 import DeleteButton from '../Buttons/DeleteButton';
 
 type PostTableType = {
