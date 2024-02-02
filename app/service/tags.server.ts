@@ -1,4 +1,4 @@
-import {Tag} from '@prisma/client';
+import { Tag } from '@prisma/client';
 
 export const createTags = async ({tags}: {tags: string[]}) => {
   try {
@@ -104,5 +104,17 @@ export const disconnectTagsToPost = async ({id}: {id: number}) => {
     });
   } catch (error) {
     throw new Error('Error disconnect tag');
+  }
+};
+
+export const getTagBySlug = async ({slug}:{slug:string}) => {
+  try {
+    const tag = await prisma.tag.findUnique({
+      where:{slug}
+    });
+    if(!tag) throw new Error ("Tag not found")
+    return tag;
+  } catch (error) {
+    throw new Error('Failed to get tags');
   }
 };

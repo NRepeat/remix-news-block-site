@@ -1,16 +1,17 @@
-import {Link, useLocation} from '@remix-run/react';
+import { Link, useLocation } from '@remix-run/react';
 
 const Sidebar = () => {
   const location = useLocation();
   const links = [
-    {title: 'Pages', link: '/admin/pages'},
-    {title: 'Posts', link: '/admin/posts'},
-    {title: 'Media', link: '/admin/media'},
-    {title: 'Texts ', link: '/admin/texts'},
+    { title: 'Pages', link: '/admin/pages' },
+    { title: 'Posts', link: '/admin/posts' },
+    { title: 'Media', link: '/admin/media' },
+    { title: 'Texts ', link: '/admin/texts' },
+    { title: 'Tags ', link: '/admin/tags' }
   ];
 
   return (
-    <nav className="min-h-screen " style={{gridArea: 'sidebar'}}>
+    <nav className="min-h-screen " style={{ gridArea: 'sidebar' }}>
       <ul className=" flex flex-col h-full pl-4 gap-1 bg-sky-900 text-white ">
         {links.map((link, i) => (
           <li

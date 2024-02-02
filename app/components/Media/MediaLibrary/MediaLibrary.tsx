@@ -1,12 +1,17 @@
-import {Image} from '@prisma/client';
-import {SerializeFrom} from '@remix-run/node';
-import {useRouteLoaderData} from '@remix-run/react';
-import {FC, useState} from 'react';
+import { Image } from '@prisma/client';
+import { SerializeFrom } from '@remix-run/node';
+import { useRouteLoaderData } from '@remix-run/react';
+import { withZod } from '@remix-validated-form/with-zod';
+import { FC, useState } from 'react';
+import { ValidatedForm } from 'remix-validated-form';
+import { z } from 'zod';
 import MediaForm from '~/components/DropzoneImage/DropzoneImage';
+import { SubmitButton } from '~/components/UI/SubmitButton/SubmitButton';
+import FormInput from '~/components/UI/ValidatedFormInput/ValidatedFormInput';
 import usePagination from '~/hooks/usePagination';
-import {loader as mediaRouteLoader} from '~/routes/admin/media/route';
-import {loader as postRouteLoader} from '~/routes/admin/pages_.page/$page/edit/_index';
-import {loader} from '~/routes/admin/posts_.post/$id/edit/route';
+import { loader as mediaRouteLoader } from '~/routes/admin/media/route';
+import { loader as postRouteLoader } from '~/routes/admin/pages_.page/$page/edit/_index';
+import { loader } from '~/routes/admin/posts_.post/$id/edit/route';
 import ImageGrid from './ImageGrid/ImageGrid';
 import Navigation from './Navigation/Navigation';
 import SelectButton from './SelectButton/SelectButton';
@@ -16,10 +21,16 @@ type MediaLibraryType = {
   images?: SerializeFrom<Image[]>;
   isBaner: boolean;
   action: string;
-  setPostImageHandler?: (data: {id: number; postId: number}) => void;
+  setPostImageHandler?: (data: { id: number; postId: number }) => void;
   postId?: number;
   setSelectImage?: React.Dispatch<React.SetStateAction<(number | undefined)[]>>;
 };
+const searchMediaValidator = withZod(
+  z.object({
+    search: z.coerce.string(),
+  })
+);
+
 const MediaLibrary: FC<MediaLibraryType> = ({
   isBaner,
   postId,
@@ -40,7 +51,6 @@ const MediaLibrary: FC<MediaLibraryType> = ({
   const pageEditRoute = useRouteLoaderData<typeof postRouteLoader>(
     'routes/admin/pages_.page/$id/edit/_index'
   );
-
   const currentPage =
     pageEditRoute?.currentPage ||
     mediaRoutData?.currentPage ||
@@ -60,6 +70,21 @@ const MediaLibrary: FC<MediaLibraryType> = ({
   return (
     <div className="  inline-flex flex-col w-full gap-2  ">
       <Navigation setOpenTab={setOpenTab} tabIsOpen={tabIsOpen} />
+      {tabIsOpen && <div className="w-full inline-flex items-center justify-end pr-4">
+        <ValidatedForm
+          className={'inline-flex h-12   w-full justify-end gap-1'}
+          validator={searchMediaValidator}
+        >
+          <FormInput
+            name="search"
+            classNames=" rounded-sm  h-10"
+            placeholder="Search post"
+          />
+          <SubmitButton classNames="border-2  pr-2 rounded-sm pl-2 bg-white ">
+            Search posts
+          </SubmitButton>
+        </ValidatedForm>
+      </div>}
 
       {tabIsOpen ? (
         <>

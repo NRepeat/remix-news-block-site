@@ -7,6 +7,7 @@ type MyInputProps = {
   placeholder?: string;
   value?: number | string | undefined;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  classNames?: string;
 };
 
 const FormInput = ({
@@ -16,6 +17,7 @@ const FormInput = ({
   placeholder,
   value,
   onChange,
+  classNames,
 }: MyInputProps) => {
   const {error, getInputProps} = useField(name);
 
@@ -27,7 +29,7 @@ const FormInput = ({
         </label>
         <input
           onChange={onChange}
-          className="border-2 border-gray-200 pl-1 pb-1 pt-1 rounded-sm"
+          className={` ${classNames} border-2 border-gray-200 pl-1 min-h-6 pb-1 pt-1 rounded-sm`}
           {...getInputProps({
             onChange,
             value,

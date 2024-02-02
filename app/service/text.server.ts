@@ -1,4 +1,4 @@
-import {prisma} from '~/utils/prisma.server';
+import { prisma } from '~/utils/prisma.server';
 
 export const createText = async ({
   slug,
@@ -84,5 +84,22 @@ export const deleteText = async (id: number) => {
     return text;
   } catch (error) {
     throw new Error('Error delete text');
+  }
+};
+
+export const searchTexts = async ({query}: {query: string}) => {
+  try {
+    const searchResults = await prisma.text.findMany({
+      where: {
+        OR: [
+          {title: {contains: query, mode: 'insensitive'}},
+          {article: {contains: query, mode: 'insensitive'}},
+        ],
+      },
+    });
+
+    return searchResults;
+  } catch (error) {
+    throw new Error('Error searching for posts');
   }
 };

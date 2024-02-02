@@ -165,3 +165,21 @@ export const disconnectImagePost = async (id: number, imageId: number) => {
     throw new Error('Create post error');
   }
 };
+
+export const searchPosts = async ({query}: {query: string}) => {
+  try {
+    const searchResults = await prisma.post.findMany({
+      where: {
+        OR: [
+          {title: {contains: query, mode: 'insensitive'}},
+          {article: {contains: query, mode: 'insensitive'}},
+        ],
+      },
+      include: {TagPost: {select: {id: true, tag: true}}},
+    });
+
+    return searchResults;
+  } catch (error) {
+    throw new Error('Error searching for posts');
+  }
+};

@@ -18,7 +18,6 @@ model Page {
   baners          Baner[]
   texts           Text[]
   content         String          @default("[]")
-  type            String          @default("page")
   postsCarousels  PostCarousel[]
   imagesCarousels ImageCarousel[]
   createdAt       DateTime        @default(now())
@@ -28,13 +27,11 @@ model Page {
 model Post {
   id                Int                @id @default(autoincrement())
   title             String?            @default("")
-  type              String?            @default("post")
   slug              String?            @unique
   thumbnail         String?
   description       String?
   article           String?
   rating            Int?               @default(0)
-  order             Int?
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   page              Page?              @relation(fields: [pageId], references: [id])
@@ -68,22 +65,16 @@ model Text {
   id        Int      @id @default(autoincrement())
   title     String
   article   String   @default("")
-  order     Int?
   pageId    Int?
   content   String   @default("[]")
-  type      String   @default("TextWidget")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Page      Page?    @relation(fields: [pageId], references: [id])
-
-  @@unique([order, pageId])
 }
 
 model Baner {
   id        Int      @id @default(autoincrement())
   link      String?
-  order     Int?
-  type      String?  @default("baner")
   image     Image?   @relation(fields: [imageId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,7 +88,6 @@ model ImageCarousel {
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   ImageCarouselImage ImageCarouselImage[]
-  type               String               @default("imageCarousel")
   order              Int?
   Page               Page?                @relation(fields: [pageId], references: [id])
   pageId             Int?
@@ -130,7 +120,6 @@ model Image {
   path               String
   order              Int?
   link               String?              @default("")
-  type               String               @default("image")
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   ImageCarouselImage ImageCarouselImage[]

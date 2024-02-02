@@ -1,4 +1,4 @@
-import {prisma} from '~/utils/prisma.server';
+import { prisma } from '~/utils/prisma.server';
 
 export const createImage = async (path: string) => {
   try {
@@ -64,5 +64,22 @@ export const updateImage = async ({
     return updateImage;
   } catch (error) {
     throw new Error('Error delete image');
+  }
+};
+
+export const searchImage = async ({query}: {query: string}) => {
+  try {
+    const searchResults = await prisma.image.findMany({
+      where: {
+        OR: [
+          {path: {contains: query, mode: 'insensitive'}},
+          {link: {contains: query, mode: 'insensitive'}},
+        ],
+      },
+    });
+
+    return searchResults;
+  } catch (error) {
+    throw new Error('Error searching for posts');
   }
 };

@@ -95,7 +95,7 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
   });
 
   return (
-    <div className=" flex flex-col rounded-sm p-4 border-4 gap-2 bg-slate-50 ">
+    <div className=" flex flex-col rounded-sm p-2 border-2 gap-2 bg-slate-100 ">
       {isSave && (
         <button
           className="pt-2 pb-2 bg-green-200 border-2 border-green-500  "
