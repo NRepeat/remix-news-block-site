@@ -42,23 +42,6 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({
       {method: 'post'}
     );
   };
-  const isDisabled = (zone: DropInstance) => {
-    const banerContainerTypes = [
-      'TagsPageBottomBanerContainer',
-      'SearchPageBottomBanerContainer',
-      'SearchPageTopBanerContainer',
-      'PostPageTopBanerContainer',
-      'PostPageBottomBanerContainer',
-      'TagsPageTopBanerContainer',
-    ];
-
-    if (banerContainerTypes.includes(zone.type)) {
-      const hasWidgets = widgetsArr?.some(w => w?.containerId === zone.id);
-      return !!hasWidgets;
-    }
-
-    return false;
-  };
 
   const excludedTypes = [
     'TagsPageAdditionalContentControl',
@@ -81,7 +64,6 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({
             <div className="flex flex-col items-center w-50% gap-4">
               {zones.map(zone => (
                 <button
-                  disabled={isDisabled(zone)}
                   className={styles.modalButton}
                   onClick={() => {
                     setIsOpen(false), addWidgetToContainer(zone.id);
