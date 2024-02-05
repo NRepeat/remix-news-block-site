@@ -57,6 +57,7 @@ const Form: FC<BanerFormType> = ({widget, page, images}) => {
       }
     }
   }, [images, page, widget.id]);
+
   const deleteWidget = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     submit(
@@ -95,7 +96,12 @@ const Form: FC<BanerFormType> = ({widget, page, images}) => {
         setSelectImage={setSelectImage}
         images={selectedImages}
       />
-      <ValidatedForm navigate={false} validator={banerValidator} method="post">
+      <ValidatedForm
+        navigate={false}
+        validator={banerValidator}
+        action={`/admin/pages/page/${page?.slug}/edit/baner/create`}
+        method="post"
+      >
         <FormInput name="imageId" value={selectImages[0] ?? ''} type="hidden" />
         <FormInput name="banerId" value={banerId} type="hidden" />
         <FormInput type="hidden" name="id" value={widget.id} />
