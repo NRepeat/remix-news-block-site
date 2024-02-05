@@ -8,6 +8,7 @@ export async function action({params}: ActionFunctionArgs) {
     await deletePost(parseInt(id));
     return redirect('/admin/posts');
   } catch (error) {
+    console.log('🚀 ~ action ~ error:', error);
     throw new Response('Bad request');
   }
 }

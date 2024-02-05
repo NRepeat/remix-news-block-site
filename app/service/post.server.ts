@@ -85,6 +85,7 @@ export const deletePost = async (postId: number) => {
     });
     return deletedPost;
   } catch (error) {
+    console.log('🚀 ~ deletePost ~ error:', error);
     throw new Error('Delete post error');
   }
 };
