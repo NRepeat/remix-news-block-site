@@ -16,7 +16,7 @@ type DropZone = {
   posts: SerializeFrom<PostWithTags[]>;
 };
 
-const DropZone = ({page, posts, images}: DropZone) => {
+const DropZone = ({page, posts, images, isSave, setSave}: DropZone) => {
   const widgetsButtons = getWidgetButtons(page);
   if (!widgetsButtons) throw new Error('Not found');
   const dropZones = getDropZones(page);
@@ -40,6 +40,8 @@ const DropZone = ({page, posts, images}: DropZone) => {
       <div className="w-full  gap-2">
         {dropZones.map(zone => (
           <DropZoneWrapper
+            isSave={isSave}
+            setSave={setSave}
             images={images}
             page={page}
             key={zone.id}

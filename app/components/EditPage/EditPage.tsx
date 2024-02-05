@@ -12,14 +12,25 @@ type EditPageType = {
 
 const EditPage = ({images, page, posts}: EditPageType) => {
   const [isSave, setSave] = useState<boolean | 'save'>(false);
+
   return (
     <div
       style={{gridArea: 'main'}}
       className="flex flex-col relative bg-gray-100  p-4"
     >
-      <p className="text-2xl pb-4 border-b-2 ">
-        Edit page: {page.name.toUpperCase()}{' '}
-      </p>
+      <div className="inline-flex w-full justify-between">
+        <p className="text-2xl pb-4 border-b-2 ">
+          Edit page: {page.name.toUpperCase()}{' '}
+        </p>
+        {isSave && (
+          <button
+            className="pt-1 pr-2 pl-2 pb-1 bg-green-200 border-2 border-green-500  "
+            onClick={() => setSave('save')}
+          >
+            Save position
+          </button>
+        )}
+      </div>
 
       <DropZone
         page={page}

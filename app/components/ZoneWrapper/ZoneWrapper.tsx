@@ -21,6 +21,8 @@ type DropZoneWrapperType = {
   posts: SerializeFrom<GetAllPostsType>;
   images: SerializeFrom<Image[]>;
   page: SerializeFrom<Page>;
+  isSave: boolean | 'save';
+  setSave: React.Dispatch<React.SetStateAction<boolean | 'save'>>;
 };
 
 const DropZoneWrapper: FC<DropZoneWrapperType> = ({
@@ -29,6 +31,8 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({
   dropZone,
   widgetsData,
   posts,
+  isSave,
+  setSave,
 }) => {
   const [open, setOpen] = useState<boolean>(true);
 
@@ -68,6 +72,8 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({
           <div className="p-4 bg-slate-200" ref={setNodeRef}>
             {widgetsData && (
               <WidgetWrapper
+                isSave={isSave}
+                setSave={setSave}
                 dropZone={dropZone}
                 page={page}
                 images={images}
@@ -77,7 +83,7 @@ const DropZoneWrapper: FC<DropZoneWrapperType> = ({
             )}
             {widgetsData?.length === 0 && (
               <div className="w-full min-h-12 bg-gray-200 flex items-center pl-4 ">
-                No widgets added eat{' '}
+                No widgets added eat
               </div>
             )}
           </div>

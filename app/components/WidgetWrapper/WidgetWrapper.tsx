@@ -2,7 +2,7 @@ import {useDndMonitor} from '@dnd-kit/core';
 import {Image, Page} from '@prisma/client';
 import {SerializeFrom} from '@remix-run/node';
 import {useSubmit} from '@remix-run/react';
-import {FC, useEffect, useState} from 'react';
+import {FC, useCallback, useEffect, useState} from 'react';
 import {GetAllPostsType} from '~/service/post.server';
 import {DropInstance, WidgetInstance} from '~/types/types';
 import DraggableWidgetWrapper from '../DraggableWidgetWrapper/DraggableWidgetWrapper';
@@ -13,6 +13,8 @@ type WidgetWrapperType = {
   posts: SerializeFrom<GetAllPostsType>;
   page: SerializeFrom<Page>;
   dropZone: DropInstance;
+  isSave: boolean | 'save';
+  setSave: React.Dispatch<React.SetStateAction<boolean | 'save'>>;
 };
 
 const WidgetWrapper: FC<WidgetWrapperType> = ({
@@ -21,12 +23,23 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
   widgetsData,
   posts,
   page,
+  isSave,
+  setSave,
 }) => {
-  const [isSave, setIsSave] = useState<boolean>(false);
   const submit = useSubmit();
   const [newWidgetPosition, setNewWidgetPosition] = useState<
     WidgetInstance[] | null
   >();
+  const handleSubmit = useCallback(
+    (position: WidgetInstance[] | null | undefined) => {
+      submit(
+        {type: 'drop', widgets: JSON.stringify(position)},
+        {method: 'post', navigate: false}
+      );
+      setSave(false);
+    },
+    [submit, setSave]
+  );
   useEffect(() => {
     if (widgetsData.length !== 0) {
       setNewWidgetPosition([...widgetsData]);
@@ -35,6 +48,12 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
       setNewWidgetPosition([...widgetsData]);
     }
   }, [widgetsData]);
+
+  useEffect(() => {
+    if (isSave === 'save') {
+      handleSubmit(newWidgetPosition);
+    }
+  }, [isSave, newWidgetPosition, handleSubmit]);
   useDndMonitor({
     onDragEnd(e) {
       const active = e.active;
@@ -56,7 +75,7 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
           setNewWidgetPosition(prev =>
             Array.isArray(prev) ? [...newWidgetPosition] : prev
           );
-          setIsSave(true);
+          setSave(true);
         }
       }
       if (over?.data?.current?.isBottomHalfDroppable) {
@@ -70,22 +89,13 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
           setNewWidgetPosition(prev =>
             Array.isArray(prev) ? [...newWidgetPosition] : prev
           );
-          setIsSave(true);
+          setSave(true);
         }
       }
       return null;
     },
   });
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.stopPropagation();
-
-    submit(
-      {type: 'drop', widgets: JSON.stringify(newWidgetPosition)},
-      {method: 'post', navigate: false}
-    );
-    setIsSave(false);
-  };
   const widgetForms = newWidgetPosition?.map(widget => {
     const {type, containerId} = widget;
 
@@ -96,15 +106,6 @@ const WidgetWrapper: FC<WidgetWrapperType> = ({
 
   return (
     <div className=" flex flex-col rounded-sm p-2 border-2 gap-2 bg-slate-100 ">
-      {isSave && (
-        <button
-          className="pt-2 pb-2 bg-green-200 border-2 border-green-500  "
-          onClick={e => handleSubmit(e)}
-        >
-          Save position
-        </button>
-      )}
-
       {widgetForms &&
         widgetForms.length >= 1 &&
         widgetForms.map((data, i) => {
