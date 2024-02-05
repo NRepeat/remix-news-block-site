@@ -51,31 +51,45 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({
   const zones = dropZones.filter(zone => !excludedTypes.includes(zone.type));
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        onKeyDown={() => setIsOpen(true)}
-        className={styles.widgetButton}
-      >
-        <p>{widgetButtonData.name}</p>
-      </button>
-      {open && (
-        <div>
-          <Modal head="Chose container" setIsOpen={setIsOpen}>
-            <div className="flex flex-col items-center w-50% gap-4">
-              {zones.map(zone => (
-                <button
-                  className={styles.modalButton}
-                  onClick={() => {
-                    setIsOpen(false), addWidgetToContainer(zone.id);
-                  }}
-                  key={zone.id}
-                >
-                  {zone.name}
-                </button>
-              ))}
+      {page.slug === 'main' && (
+        <button
+          onClick={() => {
+            addWidgetToContainer(dropZones[0].id);
+          }}
+          className={styles.widgetButton}
+        >
+          <p>{widgetButtonData.name}</p>
+        </button>
+      )}
+      {page.slug !== 'main' && (
+        <>
+          <button
+            onClick={() => setIsOpen(true)}
+            onKeyDown={() => setIsOpen(true)}
+            className={styles.widgetButton}
+          >
+            <p>{widgetButtonData.name}</p>
+          </button>
+          {open && (
+            <div>
+              <Modal head="Chose container" setIsOpen={setIsOpen}>
+                <div className="flex flex-col items-center w-50% gap-4">
+                  {zones.map(zone => (
+                    <button
+                      className={styles.modalButton}
+                      onClick={() => {
+                        setIsOpen(false), addWidgetToContainer(zone.id);
+                      }}
+                      key={zone.id}
+                    >
+                      {zone.name}
+                    </button>
+                  ))}
+                </div>
+              </Modal>
             </div>
-          </Modal>
-        </div>
+          )}
+        </>
       )}
     </>
   );
