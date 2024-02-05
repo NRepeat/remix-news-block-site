@@ -70,7 +70,11 @@ export const updatePost = async (
   try {
     const updatedPost = await prisma.post.update({
       where: {id: postId},
-      data: updatedData,
+      data: {
+        article: updatedData.article,
+        description: updatedData.article,
+        slug: updatedData.title,
+      },
     });
     return updatedPost;
   } catch (error) {
@@ -85,15 +89,14 @@ export const deletePost = async (postId: number) => {
     });
     return deletedPost;
   } catch (error) {
-    console.log('🚀 ~ deletePost ~ error:', error);
     throw new Error('Delete post error');
   }
 };
 
-export const createPost = async () => {
+export const createPost = async (slug: string) => {
   try {
     const post = await prisma.post.create({
-      data: {},
+      data: {slug: slug, title: slug},
     });
 
     return post;
