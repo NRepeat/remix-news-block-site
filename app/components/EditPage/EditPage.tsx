@@ -18,10 +18,8 @@ const EditPage = ({images, page, posts}: EditPageType) => {
       style={{gridArea: 'main'}}
       className="flex flex-col relative bg-gray-100  p-4"
     >
-      <div className="inline-flex w-full justify-between">
-        <p className="text-2xl pb-4 border-b-2 ">
-          Edit page: {page.name.toUpperCase()}{' '}
-        </p>
+      <div className="inline-flex w-full justify-between border-b-2">
+        <p className="text-2xl pb-4  ">Edit page: {page.name.toUpperCase()} </p>
         {isSave && (
           <button
             className="pt-1 pr-2 pl-2 pb-1 bg-green-200 border-2 border-green-500  "
