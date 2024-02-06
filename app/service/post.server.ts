@@ -1,5 +1,6 @@
 import {Post, Tag} from '@prisma/client';
 import {prisma} from '~/utils/prisma.server';
+import {PaginationParams} from './image.server';
 
 export type PostWithTags = {
   TagPost: {
@@ -7,10 +8,7 @@ export type PostWithTags = {
     tag: Tag;
   }[];
 } & Post;
-type GetAllPostsParams = {
-  page: number;
-  pageSize: number;
-};
+
 export type GetAllPostsType = PostWithTags[];
 type updatePostType = {
   title?: string;
@@ -21,7 +19,7 @@ type updatePostType = {
 export const getAllPosts = async ({
   page,
   pageSize,
-}: GetAllPostsParams): Promise<{
+}: PaginationParams): Promise<{
   posts: GetAllPostsType;
   totalPages: number;
 }> => {

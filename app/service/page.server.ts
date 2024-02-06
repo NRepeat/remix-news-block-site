@@ -1,15 +1,9 @@
 import {WidgetInstance} from '~/types/types';
 import {prisma} from '~/utils/prisma.server';
 
-export const createPage = async ({
-  name,
-  slug,
-}: {
-  name: string;
-  slug: string;
-}) => {
+export const createPage = async () => {
   try {
-    await prisma.page.create({data: {name, slug}});
+    await prisma.page.create({data: {name: 'main', content: '', slug: 'main'}});
   } catch (error) {
     throw new Error('Bad request');
   }
@@ -72,46 +66,32 @@ export const updatePageContent = async ({
   index,
 }: {
   slug: string;
-  content: string;
+  content: WidgetInstance;
   index: number;
 }) => {
+  console.log('🚀 ~   index:', index);
   try {
-    const prevContent = await getPageContent({slug});
-    const parsedContent = JSON.parse(content) as WidgetInstance;
-    const newContent = [];
-    if (prevContent?.content === '' || prevContent?.content === 'undefined') {
-      newContent.push(parsedContent);
+    const stringifiedWidget = JSON.stringify(content);
+    const prevPageContent = await getPageContent({slug});
+    console.log('🚀 ~ prevPageContent:', stringifiedWidget);
+
+    if (prevPageContent?.content === '[]') {
+      console.log('🚀 ~ prevPageContent:', prevPageContent);
+
+      return prisma.page.update({
+        where: {slug},
+        data: {content: stringifiedWidget},
+        select: {content: true},
+      });
     }
-    if (prevContent?.content) {
-      const parsedArray = JSON.parse(prevContent.content) as Array<[]>;
 
-      newContent.push(
-        ...parsedArray.map(item =>
-          typeof item === 'string' ? JSON.parse(item) : item
-        )
-      );
+    // const pageContent = await prisma.page.update({
+    //   where: {slug},
+    //   data: {content:newContent},
+    //   select: {content: true},
+    // });
 
-      const existingIndex = newContent.findIndex(
-        el => el.id === parsedContent.id
-      );
-
-      if (existingIndex !== -1) {
-        newContent.splice(existingIndex, 1);
-      }
-
-      newContent.splice(
-        index,
-        0,
-        typeof content === 'string' ? JSON.parse(content) : content
-      );
-    }
-    const pageContent = await prisma.page.update({
-      where: {slug},
-      data: {content: JSON.stringify(newContent)},
-      select: {content: true},
-    });
-
-    return pageContent;
+    // return pageContent;
   } catch (error) {
     throw new Error('Not found');
   }

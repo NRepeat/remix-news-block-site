@@ -17,7 +17,7 @@ model Page {
   posts           Post[]
   baners          Baner[]
   texts           Text[]
-  content         String          @default("[]")
+  content         Json
   postsCarousels  PostCarousel[]
   imagesCarousels ImageCarousel[]
   createdAt       DateTime        @default(now())

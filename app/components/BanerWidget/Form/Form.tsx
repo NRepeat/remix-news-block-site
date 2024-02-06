@@ -36,7 +36,7 @@ const Form: FC<BanerFormType> = ({widget, page, images}) => {
 
   useEffect(() => {
     if (page) {
-      const content = JSON.parse(page.content) as WidgetInstance[];
+      const content = JSON.parse(page.content as string) as WidgetInstance[];
       const widgetsInstanceContent = content.find(w => w.id === widget.id)
         ?.additionalData?.content as string;
 

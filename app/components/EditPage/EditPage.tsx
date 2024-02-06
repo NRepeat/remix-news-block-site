@@ -29,7 +29,6 @@ const EditPage = ({images, page, posts}: EditPageType) => {
           </button>
         )}
       </div>
-
       <DropZone
         page={page}
         isSave={isSave}

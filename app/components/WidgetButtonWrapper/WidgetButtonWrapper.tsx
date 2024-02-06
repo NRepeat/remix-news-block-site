@@ -28,18 +28,15 @@ const WidgetButtonWrapper: FC<WidgetButtonWrapper> = ({
   const widgetButtonData = widgets[type].button;
 
   const addWidgetToContainer = (containerId: string | UniqueIdentifier) => {
-    const newElement = widgets[type].construct({
-      id: `widget-button-${id}`,
-      containerId,
-    });
-    const stringifiedNewElement = JSON.stringify(newElement);
     sub(
       {
-        newElement: stringifiedNewElement,
+        type,
+        id,
+        containerId,
         page: page.slug,
         index: widgetsArr?.length ? widgetsArr.length : 0,
       },
-      {method: 'post'}
+      {method: 'post', navigate: false}
     );
   };
 

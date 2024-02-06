@@ -21,11 +21,11 @@ export const getImage = async (id: number) => {
     throw new Error('Error get image');
   }
 };
-type getAllImagesParams = {
+export type PaginationParams = {
   page: number;
   pageSize: number;
 };
-export const getAllImages = async ({page, pageSize}: getAllImagesParams) => {
+export const getAllImages = async ({page, pageSize}: PaginationParams) => {
   try {
     const images = await prisma.image.findMany({
       skip: (page - 1) * pageSize,

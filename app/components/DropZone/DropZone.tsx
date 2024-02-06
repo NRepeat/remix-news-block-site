@@ -21,9 +21,7 @@ const DropZone = ({page, posts, images, isSave, setSave}: DropZone) => {
   if (!widgetsButtons) throw new Error('Not found');
   const dropZones = getDropZones(page);
   if (!dropZones) throw new Error('Not found');
-  const content = JSON.parse(
-    page.content && page.content !== 'undefined' ? page.content : '[]'
-  ) as [];
+  const content = JSON.parse(page.content as string) as [];
   const getWidgets: () => WidgetInstance[] = useCallback(() => {
     return content.map(item =>
       typeof item === 'string' ? JSON.parse(item) : (item as WidgetInstance)

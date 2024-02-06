@@ -1,3 +1,5 @@
+import {Prisma} from '@prisma/client';
+import {JsonValue} from '@prisma/client/runtime/library';
 import {
   LoaderFunctionArgs,
   json,
@@ -5,32 +7,38 @@ import {
 } from '@remix-run/node';
 import {useLoaderData} from '@remix-run/react';
 import {withZod} from '@remix-validated-form/with-zod';
+import {createContext} from 'react';
 import {validationError} from 'remix-validated-form';
 import {z} from 'zod';
-import {zfd} from 'zod-form-data';
 import EditPage from '~/components/EditPage/EditPage';
 import {imageLinkValidator} from '~/components/ImageCarouselWidget/Wrapper/Wrapper';
 import {textValidator} from '~/components/TextWidget/Form/Form';
+import widgets from '~/components/Widgets/Widgets';
 import {getAllImages, updateImage} from '~/service/image.server';
 import {getPage, updatePage, updatePageContent} from '~/service/page.server';
 import {getAllPosts} from '~/service/post.server';
 import {createText} from '~/service/text.server';
 import {removeElement, updateElement} from '~/service/widget.server';
+import {WidgetType} from '~/types/types';
 import {banerActions} from './banerAction';
 import {createImageCarouselAction} from './createImageCarouselAction';
 import {postActions} from './postAction';
 
 export const buttonFromDataValidator = withZod(
   z.object({
-    page: zfd.text(),
-    newElement: zfd.text(),
-    index: zfd.text(),
+    id: z.coerce.number(),
+    type: z.string(),
+    page: z.string(),
+    containerId: z.coerce.string(),
+    index: z.coerce.number(),
   })
 );
 export async function loader({params, request}: LoaderFunctionArgs) {
   try {
     const slug = params.page;
-    if (!slug) throw new Error('Not found');
+    if (!slug) {
+      throw new Error('Not found');
+    }
     const url = new URL(request.url);
     const currentPage = url.searchParams.get('page') ?? '1';
     const {totalPages: totalPostsPages, posts} = await getAllPosts({
@@ -38,7 +46,26 @@ export async function loader({params, request}: LoaderFunctionArgs) {
       pageSize: 10,
     });
     const page = await getPage({slug});
-    if (!page) throw new Error('Not found');
+    if (!page) {
+      throw new Error('Not found');
+    }
+    const parsePageContent = (content: JsonValue) => {
+      console.log('🚀 ~ parsePageContent ~ content:', content);
+      if (content && typeof content === 'object' && Array.isArray(content)) {
+        const pageElementsObjects = content as Prisma.JsonArray;
+        console.log(
+          '🚀 ~ Array.isArray ~ pageElementsObjects :',
+          pageElementsObjects
+        );
+        return pageElementsObjects;
+      }
+      return;
+    };
+    console.log(
+      '🚀 ~ parsePageContent ~ parsePageContent:',
+      parsePageContent(page?.content)
+    );
+
     const {images, totalPages: totalImagePages} = await getAllImages({
       page: parseInt(currentPage),
       pageSize: 10,
@@ -116,14 +143,19 @@ export async function action({params, request}: ActionFunctionArgs) {
     if (validatedData.error) {
       throw new Error('Bad request');
     }
-    const newWidget = JSON.stringify(validatedData.data.newElement);
-    const index = validatedData.data.index;
-    await updatePageContent({
-      index: parseInt(index),
-      slug,
-      content: newWidget,
+    const {index, containerId, id, page, type} = validatedData.data;
+    const newElement = widgets[type as WidgetType].construct({
+      id: `widget-button-${id}`,
+      containerId,
     });
-    return json({newWidget});
+    console.log('🚀 ~ action ~ newElement:', newElement);
+
+    await updatePageContent({
+      index,
+      slug: page,
+      content: newElement,
+    });
+    return json({newElement});
   } catch (error) {
     throw new Response('Bad request');
   }
@@ -131,5 +163,11 @@ export async function action({params, request}: ActionFunctionArgs) {
 
 export default function Index() {
   const {posts, page, images} = useLoaderData<typeof loader>();
-  return <EditPage images={images} page={page} posts={posts} />;
+  const EditPageContext = createContext(null);
+
+  return (
+    <EditPageContext.Provider value={null}>
+      <EditPage images={images} page={page} posts={posts} />;
+    </EditPageContext.Provider>
+  );
 }

@@ -6,7 +6,7 @@ export const getElement = async ({id, slug}: {id: string; slug: string}) => {
     const page = await getPage({slug});
     if (!page) throw new Error('Not found');
 
-    const content: [] = JSON.parse(page.content);
+    const content: [] = JSON.parse(page.content as string);
     const elements: WidgetInstance[] = content.map(item =>
       typeof item === 'string' ? JSON.parse(item) : item
     );
@@ -31,7 +31,7 @@ export const updateElement = async ({
     const element = (await getElement({id, slug})) as WidgetInstance;
     const page = await getPage({slug});
     if (!page) throw new Error('Not found');
-    const pageContent: WidgetInstance[] = JSON.parse(page.content);
+    const pageContent: WidgetInstance[] = JSON.parse(page.content as string);
 
     const elementIndex = pageContent.findIndex(el => el.id === id);
     pageContent;
@@ -44,7 +44,7 @@ export const updateElement = async ({
     };
 
     await updatePageContent({
-      content: JSON.stringify(newElement),
+      content: newElement,
       index: elementIndex,
       slug,
     });
@@ -58,7 +58,7 @@ export const removeElement = async ({id, slug}: {id: string; slug: string}) => {
     const pageContent = await getPageContent({slug});
     if (!pageContent) throw new Error('not found');
 
-    const parsedPageContent = JSON.parse(pageContent.content);
+    const parsedPageContent = JSON.parse(pageContent.content as string);
     if (Array.isArray(parsedPageContent)) {
       const trueParsedPageContent: WidgetInstance[] = parsedPageContent.map(
         c => (typeof c === 'string' ? JSON.parse(c) : c)
